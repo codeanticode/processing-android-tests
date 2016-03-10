@@ -1,10 +1,11 @@
-package devel.carboard;
+package devel.cardboard;
 
+import processing.cardboard.*;
 import processing.core.PApplet;
 
 public class StereoSketch extends PApplet {
   public void settings() {    
-    fullScreen(P2D);    
+    fullScreen(PGraphicsCardboard.RENDERER);    
   }
   
   public void setup() {
