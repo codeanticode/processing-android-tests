@@ -1,7 +1,6 @@
 package devel.wallpaper_test;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -10,8 +9,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
-import processing.app.PFragment;
-import processing.core.PApplet;
 
 /*
 public class MainActivity extends Activity {
