@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="/Users/andres/code/android/android-studio/Android-Cardboard-Test/libs/processing-cardboard/src/main/assets"/></dataSet><dataSet config="debug"><source path="/Users/andres/code/android/android-studio/Android-Cardboard-Test/libs/processing-cardboard/src/debug/assets"/></dataSet></merger>
