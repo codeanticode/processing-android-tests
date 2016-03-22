@@ -1,5 +1,6 @@
 package processing.cardboard;
 
+import com.google.vrtoolkit.cardboard.Eye;
 import com.google.vrtoolkit.cardboard.HeadTransform;
 
 import android.view.SurfaceView;
@@ -18,6 +19,7 @@ public class PGraphicsCardboard extends PGraphics3D {
   
   private boolean initialized = false;
   private PMatrix3D headMatrix;
+  private PMatrix3D viewMatrix;
   private PMatrix3D correctionMatrix;
   private final float sensingScale  = 1.0f;  // for millimeter
   private int currentEye;
@@ -38,7 +40,28 @@ public class PGraphicsCardboard extends PGraphics3D {
   public void setRightEye() {
     currentEye = RIGHT_EYE;
   }
-  
+
+  public void eyeTransform(Eye eye) {
+    float[] v = eye.getEyeView();
+      if (!initialized) initCardboard();
+    viewMatrix.set(v);
+  }
+
+
+    public void beginDraw() {
+        super.beginDraw();
+
+        applyMatrix(viewMatrix);
+    }
+
+
+    private void initCardboard() {
+        correctionMatrix = null;
+        headMatrix = new PMatrix3D();
+        viewMatrix = new PMatrix3D();
+        initialized = true;
+    }
+
   public void headTransform(HeadTransform headTransform) {
     float[] quat = new float[4];
     headTransform.getQuaternion(quat, 0);
@@ -144,18 +167,7 @@ public class PGraphicsCardboard extends PGraphics3D {
 
 
   }
-  
-  public void beginDraw() {
-    super.beginDraw();
-    if (!initialized) initCardboard();
-  }
-  
-  
-  private void initCardboard() {
-    correctionMatrix = null;
-    headMatrix = new PMatrix3D();    
-    initialized = true;
-  }
+
   
   
   private PMatrix3D calcMatrix(float px, float py, float pz, float qx, float qy, float qz, float qw) {

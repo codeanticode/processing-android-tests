@@ -201,20 +201,20 @@ public class PSurfaceCardboard extends PSurfaceGLES {
     public void onNewFrame(HeadTransform arg0) {
       pgl.getGL(null);
       // TODO Auto-generated method stub
-
+//      pgc.headTransform(arg0);
     }
 
     @Override
     public void onDrawEye(Eye arg0) {
       Log.i(TAG, "onDrawEye");
       // TODO Auto-generated method stub
-      
+      pgc.eyeTransform(arg0);
+      sketch.handleDraw();
     }
 
     @Override
     public void onFinishFrame(Viewport arg0) {
       // TODO Auto-generated method stub
-      
     }
 
     @Override

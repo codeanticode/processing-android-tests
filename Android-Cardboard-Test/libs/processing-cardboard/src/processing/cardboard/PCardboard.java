@@ -113,9 +113,9 @@ public class PCardboard extends CardboardActivity implements PContainer {
         setEGLConfigChooser(surf.getConfigChooser(quality));
       }
       // The renderer can be set only once.
-      setRenderer(surf.getCardboardRenderer());
-//      setRenderer(surf.getCardboardStereoRenderer());
-
+//      setRenderer(surf.getCardboardRenderer());
+      setRenderer(surf.getCardboardStereoRenderer());
+//
       // Cardboard needs to run with its own loop.
       setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 //      setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
