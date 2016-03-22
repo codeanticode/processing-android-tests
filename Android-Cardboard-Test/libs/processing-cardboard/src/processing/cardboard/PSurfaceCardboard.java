@@ -24,8 +24,13 @@ import android.widget.RelativeLayout;
 import processing.app.PContainer;
 import processing.core.PGraphics;
 import processing.opengl.PSurfaceGLES;
+import android.view.Window;
+import android.view.WindowManager;
+import android.util.Log;
 
 public class PSurfaceCardboard extends PSurfaceGLES {
+  private static final String TAG = "PSurfaceCardboard";
+
   protected PGraphicsCardboard pgc;
   
   protected CardboardActivity cardboard;
@@ -57,7 +62,7 @@ public class PSurfaceCardboard extends PSurfaceGLES {
   }
 
   public void initView(int sketchWidth, int sketchHeight) {
-
+/*
       int displayWidth = container.getWidth();
       int displayHeight = container.getHeight();
       View rootView;
@@ -83,6 +88,23 @@ public class PSurfaceCardboard extends PSurfaceGLES {
         rootView = overallLayout;
       }
       setRootView(rootView);
+      */
+
+
+    Window window = cardboard.getWindow();
+
+    // Take up as much area as possible
+    //requestWindowFeature(Window.FEATURE_NO_TITLE);  // may need to set in theme properties
+    // the above line does not seem to be needed when using cardboard
+    //  android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen" >
+    window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
+            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+
+    // This does the actual full screen work
+    window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+    window.setContentView(surface);
   }
 
   public String getName() {
@@ -137,6 +159,7 @@ public class PSurfaceCardboard extends PSurfaceGLES {
 
     @Override
     public void onDrawFrame(HeadTransform headTransform, Eye leftEye, Eye rightEye) {
+      Log.i(TAG, "onDrawFrame");
       pgc.headTransform(headTransform);
       if (leftEye != null) pgc.setLeftEye();
       sketch.handleDraw();
@@ -173,21 +196,23 @@ public class PSurfaceCardboard extends PSurfaceGLES {
 
     }
 
+
+    @Override
+    public void onNewFrame(HeadTransform arg0) {
+      pgl.getGL(null);
+      // TODO Auto-generated method stub
+
+    }
+
     @Override
     public void onDrawEye(Eye arg0) {
+      Log.i(TAG, "onDrawEye");
       // TODO Auto-generated method stub
       
     }
 
     @Override
     public void onFinishFrame(Viewport arg0) {
-      // TODO Auto-generated method stub
-      
-    }
-
-    @Override
-    public void onNewFrame(HeadTransform arg0) {
-      pgl.getGL(null);
       // TODO Auto-generated method stub
       
     }

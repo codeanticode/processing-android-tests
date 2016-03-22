@@ -2,6 +2,7 @@ package processing.cardboard;
 
 import com.google.vrtoolkit.cardboard.CardboardActivity;
 import com.google.vrtoolkit.cardboard.CardboardView;
+import com.google.vrtoolkit.cardboard.HeadMountedDisplayManager;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -113,7 +114,7 @@ public class PCardboard extends CardboardActivity implements PContainer {
       }
       // The renderer can be set only once.
       setRenderer(surf.getCardboardRenderer());
-
+//      setRenderer(surf.getCardboardStereoRenderer());
 
       // Cardboard needs to run with its own loop.
       setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
@@ -199,13 +200,13 @@ public class PCardboard extends CardboardActivity implements PContainer {
    @Override
    public void onStart() {
      super.onStart();
-     sketch.onStart();
+//     sketch.onStart();
    }
 
 
    @Override
    public void onStop() {
-     sketch.onStop();
+//     sketch.onStop();
      super.onStop();
    }
 

@@ -18,5 +18,6 @@ public class Sketch extends PApplet {
         rotateX(frameCount * 0.01f);
         rotateY(frameCount * 0.01f);
         box(200);
+        println(frameCount);
     }
 }
