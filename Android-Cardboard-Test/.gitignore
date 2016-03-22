@@ -6,3 +6,5 @@
 .DS_Store
 /build
 /captures
+/libs/processing-cardboard/build
+/libs/android-core/build
