@@ -2,6 +2,7 @@ package processing.cardboard;
 
 import com.google.vrtoolkit.cardboard.Eye;
 import com.google.vrtoolkit.cardboard.HeadTransform;
+import com.google.vrtoolkit.cardboard.Viewport;
 
 import android.view.SurfaceView;
 import processing.app.PContainer;
@@ -18,9 +19,12 @@ public class PGraphicsCardboard extends PGraphics3D {
   protected static final int RIGHT_EYE = 1;
   
   private boolean initialized = false;
+  private Viewport viewPort;
   private PMatrix3D headMatrix;
   private PMatrix3D viewMatrix;
+  private PMatrix3D perspectiveMatrix;
   private PMatrix3D correctionMatrix;
+  private float[] headRotation;
   private final float sensingScale  = 1.0f;  // for millimeter
   private int currentEye;
   
@@ -43,14 +47,26 @@ public class PGraphicsCardboard extends PGraphics3D {
 
   public void eyeTransform(Eye eye) {
     float[] v = eye.getEyeView();
-      if (!initialized) initCardboard();
-    viewMatrix.set(v);
+    float[] p = eye.getPerspective(cameraNear, cameraFar);
+    if (!initialized) initCardboard();
+    viewPort = eye.getViewport();
+    // Matrices in Processing are row-major, and Cardboard API is column-major
+    perspectiveMatrix.set(p[0], p[4],  p[8], p[12],
+                          p[1], p[5],  p[9], p[13],
+                          p[2], p[6], p[10], p[14],
+                          p[3], p[7], p[11], p[15]);
+    viewMatrix.set(v[0], v[4],  v[8], v[12],
+                   v[1], v[5],  v[9], v[13],
+                   v[2], v[6], v[10], v[14],
+                   v[3], v[7], v[11], v[15]);
   }
 
 
     public void beginDraw() {
         super.beginDraw();
-
+        pgl.viewport(viewPort.x, viewPort.y, viewPort.width, viewPort.height);
+        camera(0.0f, 0.0f, cameraZ, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        setProjection(perspectiveMatrix);
         applyMatrix(viewMatrix);
     }
 
@@ -59,111 +75,35 @@ public class PGraphicsCardboard extends PGraphics3D {
         correctionMatrix = null;
         headMatrix = new PMatrix3D();
         viewMatrix = new PMatrix3D();
+        perspectiveMatrix = new PMatrix3D();
+        headRotation = new float[16];
         initialized = true;
     }
 
   public void headTransform(HeadTransform headTransform) {
-    float[] quat = new float[4];
-    headTransform.getQuaternion(quat, 0);
-    
+    float[] v = new float[16];
+
+    headTransform.getHeadView(v, 0);
+    headMatrix.set(v[0], v[4], v[8], v[12],
+                   v[1], v[5], v[9], v[13],
+                   v[2], v[6], v[10], v[14],
+                   v[3], v[7], v[11], v[15]);
+
+    headTransform.getQuaternion(headRotation, 0);
+
     // get pos?
     // 
     // headTransform.getHeadView(headView, offset);
     // look at other cardboard examples, documentation
-    PMatrix3D m = calcMatrix(0, 0, 0, quat[0], quat[1], quat[2], quat[3]);
-    if (correctionMatrix == null) {
-      correctionMatrix = new PMatrix3D(m);
-      correctionMatrix.invert();
-    }    
-    m.apply(correctionMatrix);
-    headMatrix = m;
-    applyMatrix(headMatrix);
+//    PMatrix3D m = calcMatrix(0, 0, 0, quat[0], quat[1], quat[2], quat[3]);
+//    if (correctionMatrix == null) {
+//      correctionMatrix = new PMatrix3D(m);
+//      correctionMatrix.invert();
+//    }
+//    m.apply(correctionMatrix);
+//    headMatrix = m;
+//    applyMatrix(headMatrix);
     
-    /*
-      float[] quat = new float[4];
-      headTransform.getQuaternion(quat, 0);
-      // normalize quaternion
-      float length = (float) Math.sqrt(quat[0] * quat[0] + quat[1] * quat[1] + quat[2] * quat[2] + quat[3] * quat[3]);
-      int DIV = 10;
-      float lowSpeed = .01f;  //.005f;
-      float mediumSpeed = .02f;  //.01f;
-      float highSpeed = .04f;  //.02f;
-      float pitchSpeed = 0;
-      float yawSpeed = 0;
-      float rollSpeed = 0;
-      if (length != 0) {
-          int pitch = (int) ((quat[0] / length) * DIV);  // pitch up/down
-          int yaw = (int) ((quat[1] / length) * DIV);  // yaw left/ right
-          int roll = (int) ((quat[2] / length) * DIV);  // roll left/right
-          //int w = (int) ((quat[3] / length) * DIV);  //
-          //Log.d(TAG, "normalized quaternion " + pitch + " " + yaw + " " + roll );
-
-          if (pitch >= 3)
-              pitchSpeed = -highSpeed;
-          else if (pitch <= -3)
-              pitchSpeed = highSpeed;
-          else if (pitch == 2)
-              pitchSpeed = -mediumSpeed;
-          else if (pitch == -2)
-              pitchSpeed = mediumSpeed;
-          else if (pitch == 1)
-              pitchSpeed = -lowSpeed;
-          else if (pitch == -1)
-              pitchSpeed = lowSpeed;
-          else
-              pitchSpeed = 0;
-
-          if (yaw >= 3)
-              yawSpeed = -highSpeed;
-          else if (yaw <= -3)
-              yawSpeed = highSpeed;
-          else if (yaw == 2)
-              yawSpeed = -mediumSpeed;
-          else if (yaw == -2)
-              yawSpeed = mediumSpeed;
-          else if (yaw == 1)
-              yawSpeed = -lowSpeed;
-          else if (yaw == -1)
-              yawSpeed = lowSpeed;
-          else
-              yawSpeed = 0;
-
-          if (roll >= 3)
-              rollSpeed = -highSpeed;
-          else if (roll <= -3)
-              rollSpeed = highSpeed;
-          else if (roll == 2)
-              rollSpeed = -mediumSpeed;
-          else if (roll == -2)
-              rollSpeed = mediumSpeed;
-          else if (roll == 1)
-              rollSpeed = -lowSpeed;
-          else if (roll == -1)
-              rollSpeed = lowSpeed;
-          else
-              rollSpeed = 0;
-
-          if ((cameraPositionX > XBOUND && yawSpeed < 0) ||
-                  (cameraPositionX < -XBOUND && yawSpeed > 0) ||
-                  (cameraPositionX <= XBOUND && cameraPositionX >= -XBOUND))
-              cameraPositionX += yawSpeed;
-
-
-          if ((cameraPositionY > YBOUND && pitchSpeed < 0) ||
-                  (cameraPositionY < -YBOUND && pitchSpeed > 0) ||
-                  (cameraPositionY <= YBOUND && cameraPositionY >= -YBOUND))
-              cameraPositionY += pitchSpeed;
-
-          if ((cameraPositionZ > ZBOUND_IN && rollSpeed < 0) ||
-                  (cameraPositionZ < ZBOUND_OUT && rollSpeed > 0) ||
-                  (cameraPositionZ <= ZBOUND_OUT && cameraPositionZ >= ZBOUND_IN))
-              cameraPositionZ += rollSpeed;
-
-//          Log.d(TAG, "Normalized quaternion " + pitch + " " + yaw + " " + roll + " Camera position "+ cameraPositionX + " " + cameraPositionY + " " + cameraPositionZ);
-      } else {
-          Log.d(TAG, "Quaternion 0");
-      }
-*/
 
 
   }
