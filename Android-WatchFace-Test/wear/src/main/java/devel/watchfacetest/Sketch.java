@@ -14,9 +14,12 @@ public class Sketch extends PApplet {
     public void draw() {
 //        background(random(255), random(255), random(255));
 //        println("Processing draw:" + frameCount);
-        ellipse(random(0, width), random(0, height), 40, 40);
+        fill(180, 200);
+        rect(random(0, width), random(0, height), 40, 40);
 //        line(0, 0, mouseX, mouseY);
-//        ellipse(mouseX, mouseY, 40, 40);
+
+        fill(200);
+        ellipse(mouseX, mouseY, 40, 40);
 //        println("MOUSE POSITION: " + mouseX + " " + mouseY);
     }
 }
