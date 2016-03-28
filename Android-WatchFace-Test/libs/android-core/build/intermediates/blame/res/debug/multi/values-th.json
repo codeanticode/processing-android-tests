@@ -1,0 +1,26 @@
+[
+    {
+        "outputFile": "/Users/andres/code/android/android-studio/Android-WatchFace-Test/libs/android-core/build/intermediates/res/merged/debug/values-th/values-th.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 90,
+                    "endOffset": 141
+                },
+                "from": {
+                    "file": "/Users/andres/code/android/android-studio/Android-WatchFace-Test/libs/android-core/build/intermediates/exploded-aar/com.google.android.support/wearable/1.3.0/res/values-th/values.xml",
+                    "position": {
+                        "startLine": 4,
+                        "startColumn": 4,
+                        "startOffset": 329,
+                        "endColumn": 90,
+                        "endOffset": 415
+                    }
+                }
+            }
+        ]
+    }
+]
