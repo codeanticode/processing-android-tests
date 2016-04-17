@@ -433,7 +433,13 @@ public class PSurfaceGLES implements PSurface, PConstants {
     public void onDrawFrame(GL10 igl) {
 //      System.out.println("drawing frame " + sketch.frameCount);
       pgl.getGL(igl);
+
+
+      
       sketch.handleDraw();
+
+
+
 //      gl.glClearColor(sketch.random(0, 1), 0, 0, 1);
 //      gl.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 

@@ -13,6 +13,7 @@ public class WallpaperSketch extends PApplet {
   }
 
   public void setup() {
+    frameRate(15);
 //    orientation(PORTRAIT);
 //    fontA = loadFont("ArialMT-48.vlw"); //replace with any font created using create font tool
 //    fill(color(0,0,0,255));
@@ -20,7 +21,7 @@ public class WallpaperSketch extends PApplet {
   }
 
   public void draw() {
-    background(150, 60, 180);
+    background(150, 50, 50);
     line(0, 0, mouseX, mouseY);
     line(width, 0, mouseX, mouseY);
     line(0, height, mouseX, mouseY);
@@ -42,5 +43,9 @@ public class WallpaperSketch extends PApplet {
 //    fill(color(0,0,255,50));
 //    ellipse(displayWidth*0.53f,displayHeight*0.5f,displayWidth*0.2f,displayWidth*0.2f);
 //    popStyle();
+  }
+
+  public void mousePressed() {
+    frameRate(5);
   }
 }

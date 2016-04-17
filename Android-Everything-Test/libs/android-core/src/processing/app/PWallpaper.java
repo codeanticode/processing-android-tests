@@ -154,8 +154,10 @@ public class PWallpaper extends WallpaperService implements PContainer {
         sketch.surfaceKeyUp(code, event);
         return super.onKeyUp(code, event);
       }
-
     }
+
+
+
 
 
     @Override
@@ -171,11 +173,21 @@ public class PWallpaper extends WallpaperService implements PContainer {
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable(){
-            public void run() {
+          public void run() {
 //                view.requestRender();
-                sketch.g.requestDraw();
-                handler.postDelayed(this, 30);
-            }
+            sketch.g.requestDraw();
+
+            PSurfaceGLES glsurf= (PSurfaceGLES)sketch.surface;
+
+            float targetfps = glsurf.pgl.getFrameRate();
+            float targetMillisPerFrame = 1000 / targetfps;
+
+//            float actualFps = sketch.frameRate;
+//            float actualMillisPerFrame = 1000 / actualFps;
+//            int waitMillis = (int)PApplet.max(0, targetMillisPerFrame - actualMillisPerFrame);
+            int waitMillis = (int)targetMillisPerFrame;
+            handler.postDelayed(this, waitMillis);
+          }
         }, 40);
 
 //        sketch.start();

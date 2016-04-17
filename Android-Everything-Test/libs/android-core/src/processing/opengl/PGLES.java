@@ -119,10 +119,6 @@ public class PGLES extends PGL {
 
 
   @Override
-  protected void setFrameRate(float fps) { }
-
-
-  @Override
   protected void initSurface(int antialias) {
     SurfaceView surf = sketch.getSurfaceView();
     if (surf != null) {

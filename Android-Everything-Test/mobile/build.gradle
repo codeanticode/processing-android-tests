@@ -28,6 +28,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     wearApp project(':wear')
     testCompile 'junit:junit:4.12'
-    compile 'com.google.android.gms:play-services:8.4.0'
     compile project(':libs:android-core')
 }
