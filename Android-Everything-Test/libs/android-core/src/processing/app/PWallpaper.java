@@ -72,6 +72,9 @@ public class PWallpaper extends WallpaperService implements PContainer {
     private PApplet sketch = null;
     private GLWallpaperSurfaceView view;
 
+    // Some notes on how to control FPS:
+    // http://stackoverflow.com/questions/4772693/how-to-limit-framerate-when-using-androids-glsurfaceview-rendermode-continuousl
+    // https://github.com/LWJGL/lwjgl/blob/master/src/java/org/lwjgl/opengl/Sync.java
     private final Runnable drawRunnable = new Runnable() {
 	  public void run() {
 //        if (sketch.frameCount % 15 == 0) {
