@@ -23,19 +23,16 @@ public class PWallpaper extends WallpaperService implements PContainer {
   String TAG = "PWallpaper";
 
   private DisplayMetrics metrics;
-  private PApplet deadSketch = null;
-  private PApplet sketch = null;
+//  private PApplet deadSketch = null;
+//  private PApplet sketch = null;
   private PEngine engine;
 
   private final Handler handler = new Handler();
 
   public PWallpaper() {
-
   }
 
   public PWallpaper(PApplet sketch) {
-    System.err.println("-----> PWallpaper CONSTRUCTOR: " + sketch);
-    setSketch(sketch);
   }
 
   public void initDimensions() {
@@ -43,7 +40,6 @@ public class PWallpaper extends WallpaperService implements PContainer {
 //    getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
     WindowManager man = (WindowManager) getSystemService(WINDOW_SERVICE);
     man.getDefaultDisplay().getMetrics(metrics);
-
   }
 
   public int getKind() {
@@ -59,11 +55,11 @@ public class PWallpaper extends WallpaperService implements PContainer {
   }
 
   public void setSketch(PApplet sketch) {
-     this.sketch = sketch;
+     engine.sketch = sketch;
   }
 
-  public void createSketch() {
-    setSketch(new PApplet());
+  public PApplet createSketch() {
+    return new PApplet();
   }
 
   @Override
@@ -73,6 +69,7 @@ public class PWallpaper extends WallpaperService implements PContainer {
   }
 
   public class PEngine extends Engine {
+    private PApplet sketch = null;
     private GLWallpaperSurfaceView view;
 
     private final Runnable drawRunnable = new Runnable() {
@@ -87,72 +84,50 @@ public class PWallpaper extends WallpaperService implements PContainer {
       }
 	};
 
+    private void scheduleNextDraw() {
+      handler.removeCallbacks(drawRunnable);
+
+      int waitMillis = 1000 / 15;
+      if (sketch != null) {
+        final PSurfaceGLES glsurf = (PSurfaceGLES) sketch.surface;
+
+        float targetfps = glsurf.pgl.getFrameRate();
+        float targetMillisPerFrame = 1000 / targetfps;
+
+//            float actualFps = sketch.frameRate;
+//            float actualMillisPerFrame = 1000 / actualFps;
+//            int waitMillis = (int)PApplet.max(0, targetMillisPerFrame - actualMillisPerFrame);
+        waitMillis = (int) targetMillisPerFrame;
+      }
+
+//      if (sketch.frameCount % 15 == 0) {
+//        System.out.println("scheduling next draw for " + sketch);
+//      }
+      handler.postDelayed(drawRunnable, waitMillis);
+    }
+
+    private void pauseNextDraw() {
+      handler.removeCallbacks(drawRunnable);
+    }
 
     @Override
     public void onCreate(SurfaceHolder surfaceHolder) {
       super.onCreate(surfaceHolder);
       Log.d(TAG, "onCreate(SurfaceHolder)");
 
-      if (sketch != null) {
-        System.out.println("marking sketch " + sketch + " as dead because creating new one");
-//        SurfaceHolder holder = getSurfaceHolder();
-//        holder.removeCallback((GLWallpaperSurfaceView) sketch.getSurface().getSurfaceView());
-//        handler.removeCallbacks(drawRunnable);
-        deadSketch = sketch;
-      }
-      createSketch();
 
+      sketch = createSketch();
       System.out.println("initializing sketch " + sketch);
-//        if (handler != null) {
-//          System.out.println("will stop handler, recreate sketch...");
-////          return;
-//          stopHandler = true;
-//          try {
-//            Thread.sleep(100);
-//          } catch (Exception ex) {}
-//          sketch.onDestroy();
-//          recreate();
-//          stopHandler = false;
-//        }
+      view = new GLWallpaperSurfaceView(PWallpaper.this);
+      sketch.initSurface(PWallpaper.this, view);
+      view.initRenderer();
 
-        boolean init = false;
-        if (view == null) {
-          System.out.println("Creating new GLWallpaperSurfaceView !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" + PWallpaper.this + " " + this);
-          view = new GLWallpaperSurfaceView(PWallpaper.this);
-          init = true;
-        }
-        sketch.initSurface(PWallpaper.this, view);
-        if (init) view.initRenderer();
+      // By default we don't get touch events, so enable them.
+      setTouchEventsEnabled(true);
 
-
-        // By default we don't get touch events, so enable them.
-        setTouchEventsEnabled(true);
-
-        scheduleNextDraw();
-        /*
-        handler = new Handler();
-        handler.postDelayed(new Runnable() {
-          public void run() {
-//                view.requestRender();
-            System.out.println("requesting draw for " + sketch);
-            sketch.g.requestDraw();
-
-            PSurfaceGLES glsurf= (PSurfaceGLES)sketch.surface;
-
-            float targetfps = glsurf.pgl.getFrameRate();
-            float targetMillisPerFrame = 1000 / targetfps;
-
-//            float actualFps = sketch.frameRate;
-//            float actualMillisPerFrame = 1000 / actualFps;
-//            int waitMillis = (int)PApplet.max(0, targetMillisPerFrame - actualMillisPerFrame);
-            int waitMillis = (int)targetMillisPerFrame;
-            if (!stopHandler) handler.postDelayed(this, waitMillis);
-          }
-        }, 40);
-*/
+      scheduleNextDraw();
 
 //        sketch.start();
-
     }
 
     @Override
@@ -178,7 +153,16 @@ public class PWallpaper extends WallpaperService implements PContainer {
 //      }
 //
       super.onVisibilityChanged(visible);
-//
+      if (sketch != null) {
+        if (visible) {
+          sketch.onResume();
+          scheduleNextDraw();
+        } else {
+          sketch.onPause();
+          pauseNextDraw();
+        }
+      }
+/*
       if (visible) {
         if (sketch != null) {
           System.out.println("Resume sketch on visibility change " + sketch);
@@ -203,6 +187,7 @@ public class PWallpaper extends WallpaperService implements PContainer {
 //          ((GLWallpaperSurfaceView)sketchToPause.surface.getSurfaceView()).onResume();
         }
       }
+      */
     }
 
     /*
@@ -237,6 +222,7 @@ public class PWallpaper extends WallpaperService implements PContainer {
       // call, you should no longer try to access this surface. If you have a rendering thread that
       // directly accesses the surface, you must ensure that thread is no longer touching the
       // Surface before returning from this function.
+      /*
       PApplet sketchToDestroy = null;
       if (deadSketch != null) {
         sketchToDestroy = deadSketch;
@@ -250,6 +236,7 @@ public class PWallpaper extends WallpaperService implements PContainer {
         System.out.println("Pausing sketch on surface destroy " + sketchToDestroy);
         sketchToDestroy.onPause();
       }
+      */
     }
 
     @Override
@@ -259,133 +246,118 @@ public class PWallpaper extends WallpaperService implements PContainer {
 //        Log.d(TAG, "onDestroy()");
 //      }
 //
-      Log.d(TAG, "onDestroy()");
+//      Log.d(TAG, "onDestroy()");
       super.onDestroy();
+      pauseNextDraw();
+      view.onDestroy();
+      sketch.onDestroy();
 
+
+      /*
       if (deadSketch != null) {
 //        System.out.println("will destroy dead sketch " + deadSketch);
-//        ((GLWallpaperSurfaceView)deadSketch.surface.getSurfaceView()).onDestroy();
+
+        System.out.println("will destroy dead sketch " + deadSketch);
         deadSketch.onDestroy();
         deadSketch = null;
       } else {
         System.out.println("will destroy sketch " + sketch);
         handler.removeCallbacks(drawRunnable);
         System.out.println("Removed handler draw callback!!!!!!!!!!!!!!!!");
-//        ((GLWallpaperSurfaceView)sketch.surface.getSurfaceView()).onDestroy();
+
         sketch.onDestroy();
         sketch = null;
       }
+      */
     }
 
-    private void scheduleNextDraw() {
-      handler.removeCallbacks(drawRunnable);
 
-      int waitMillis = 1000 / 15;
-      if (sketch != null) {
-        final PSurfaceGLES glsurf = (PSurfaceGLES) sketch.surface;
 
-        float targetfps = glsurf.pgl.getFrameRate();
-        float targetMillisPerFrame = 1000 / targetfps;
 
-//            float actualFps = sketch.frameRate;
-//            float actualMillisPerFrame = 1000 / actualFps;
-//            int waitMillis = (int)PApplet.max(0, targetMillisPerFrame - actualMillisPerFrame);
-        waitMillis = (int) targetMillisPerFrame;
+    public class GLWallpaperSurfaceView extends GLSurfaceView {
+      //      PGraphicsOpenGL g3;
+      SurfaceHolder surfaceHolder;
+
+      @SuppressWarnings("deprecation")
+      public GLWallpaperSurfaceView(Context context) {
+        super(context);
+
+        // Check if the system supports OpenGL ES 2.0.
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
+        final boolean supportsGLES2 = configurationInfo.reqGlEsVersion >= 0x20000;
+
+        if (!supportsGLES2) {
+          throw new RuntimeException("OpenGL ES 2.0 is not supported by this device.");
+        }
+
+        surfaceHolder = getHolder();
+        // are these two needed?
+        surfaceHolder.addCallback(this);
+        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
+
+        // Tells the default EGLContextFactory and EGLConfigChooser to create an GLES2 context.
+        setEGLContextClientVersion(2);
+        setPreserveEGLContextOnPause(true);
+
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+        requestFocus();
       }
 
-//      if (sketch.frameCount % 15 == 0) {
-//        System.out.println("scheduling next draw for " + sketch);
-//      }
-      handler.postDelayed(drawRunnable, waitMillis);
-    }
 
-  public class GLWallpaperSurfaceView extends GLSurfaceView {
-    //      PGraphicsOpenGL g3;
-    SurfaceHolder surfaceHolder;
+      public void initRenderer() {
+        PSurfaceGLES surf = (PSurfaceGLES)(sketch.surface);
 
-    @SuppressWarnings("deprecation")
-    public GLWallpaperSurfaceView(Context context) {
-      super(context);
-
-      // Check if the system supports OpenGL ES 2.0.
-      final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-      final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-      final boolean supportsGLES2 = configurationInfo.reqGlEsVersion >= 0x20000;
-
-      if (!supportsGLES2) {
-        throw new RuntimeException("OpenGL ES 2.0 is not supported by this device.");
+        int quality = sketch.sketchQuality();
+        if (1 < quality) {
+          setEGLConfigChooser(surf.getConfigChooser(quality));
+        }
+        // The renderer can be set only once.
+        setRenderer(surf.getRenderer());
+        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
       }
 
-      surfaceHolder = getHolder();
-      // are these two needed?
-      surfaceHolder.addCallback(this);
-      surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-
-      // Tells the default EGLContextFactory and EGLConfigChooser to create an GLES2 context.
-      setEGLContextClientVersion(2);
-      setPreserveEGLContextOnPause(true);
-
-      setFocusable(true);
-      setFocusableInTouchMode(true);
-      requestFocus();
-    }
+      @Override
+      public SurfaceHolder getHolder() {
+        return getSurfaceHolder();
+     }
 
 
-    public void initRenderer() {
-      PSurfaceGLES surf = (PSurfaceGLES)(sketch.surface);
-
-      int quality = sketch.sketchQuality();
-      if (1 < quality) {
-        setEGLConfigChooser(surf.getConfigChooser(quality));
+      public void onDestroy() {
+        super.onDetachedFromWindow();
       }
-      // The renderer can be set only once.
-      setRenderer(surf.getRenderer());
-      setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-    }
-
-    @Override
-    public SurfaceHolder getHolder() {
-      return engine.getSurfaceHolder();
-    }
 
 
-    public void onDestroy() {
-      super.onDetachedFromWindow();
-    }
+      @Override
+      public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+        super.surfaceChanged(holder, format, w, h);
 
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-      super.surfaceChanged(holder, format, w, h);
-
-      if (PApplet.DEBUG) {
-        System.out.println("SketchSurfaceView3D.surfaceChanged() " + w + " " + h);
+//        if (PApplet.DEBUG) {
+//          System.out.println("SketchSurfaceView3D.surfaceChanged() " + w + " " + h);
+//        }
+        System.out.println("SketchSurfaceView3D.surfaceChanged() " + w + " " + h + " " + sketch);
+        sketch.surfaceChanged();
       }
-      sketch.surfaceChanged();
-//        width = w;
-//        height = h;
-//        g.setSize(w, h);
 
-      // No need to call g.setSize(width, height) b/c super.surfaceChanged()
-      // will trigger onSurfaceChanged in the renderer, which calls setSize().
-      // -- apparently not true? (100110)
-    }
+      /*
+      @Override
+      public boolean onTouchEvent(MotionEvent event) {
+        return sketch.surfaceTouchEvent(event);
+      }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-      return sketch.surfaceTouchEvent(event);
-    }
+      @Override
+      public boolean onKeyDown(int code, android.view.KeyEvent event) {
+        sketch.surfaceKeyDown(code, event);
+        return super.onKeyDown(code, event);
+      }
 
-    @Override
-    public boolean onKeyDown(int code, android.view.KeyEvent event) {
-      sketch.surfaceKeyDown(code, event);
-      return super.onKeyDown(code, event);
+      @Override
+      public boolean onKeyUp(int code, android.view.KeyEvent event) {
+        sketch.surfaceKeyUp(code, event);
+        return super.onKeyUp(code, event);
+      }
+       */
     }
-
-    @Override
-    public boolean onKeyUp(int code, android.view.KeyEvent event) {
-      sketch.surfaceKeyUp(code, event);
-      return super.onKeyUp(code, event);
-    }
-  }
   }
 }

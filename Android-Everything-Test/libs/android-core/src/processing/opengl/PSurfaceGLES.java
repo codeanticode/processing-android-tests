@@ -10,6 +10,7 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.opengl.GLES20;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -56,8 +57,8 @@ public class PSurfaceGLES implements PSurface, PConstants {
 
   /** The renderer object driving the rendering loop, analogous to the
    * GLEventListener in JOGL */
-  static protected AndroidRenderer renderer;
-  static protected AndroidConfigChooser configChooser;
+  protected AndroidRenderer renderer;
+  protected AndroidConfigChooser configChooser;
 
   public PSurfaceGLES(PGraphics graphics, PContainer container) {
     this.sketch = graphics.parent;
@@ -307,6 +308,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
       }
       setRootView(rootView);
     } else if (container.getKind() == PContainer.WALLPAPER) {
+      /*
       int displayWidth = container.getWidth();
       int displayHeight = container.getHeight();
       View rootView;
@@ -332,6 +334,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
         rootView = overallLayout;
       }
       setRootView(rootView);
+      */
     }
   }
 
@@ -431,18 +434,8 @@ public class PSurfaceGLES implements PSurface, PConstants {
     }
 
     public void onDrawFrame(GL10 igl) {
-//      System.out.println("drawing frame " + sketch.frameCount);
       pgl.getGL(igl);
-
-
-      
       sketch.handleDraw();
-
-
-
-//      gl.glClearColor(sketch.random(0, 1), 0, 0, 1);
-//      gl.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-
     }
 
     public void onSurfaceChanged(GL10 igl, int iwidth, int iheight) {

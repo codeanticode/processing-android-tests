@@ -120,7 +120,6 @@ public class PGLES extends PGL {
 
   @Override
   protected void initSurface(int antialias) {
-    System.out.println("----------------------------------> Initializing surface for " + sketch);
     SurfaceView surf = sketch.getSurfaceView();
     if (surf != null) {
       glview = (GLSurfaceView)surf;
@@ -217,13 +216,6 @@ public class PGLES extends PGL {
 
   @Override
   protected void requestDraw() {
-//    if (sketch.frameCount % 15 == 0 || glview == null) {
-//      boolean res = graphics.initialized && sketch.canDraw() && glview != null;
-//      System.out.println("request draw res: " + res + "for " + sketch);
-//      System.out.println("  graphics.initialized: " + graphics.initialized);
-//      System.out.println("  sketch.canDraw(): " + sketch.canDraw());
-//      System.out.println("  glview != null: " +  (glview != null));
-//    }
     if (graphics.initialized && sketch.canDraw() && glview != null) {
       glview.requestRender();
     }
