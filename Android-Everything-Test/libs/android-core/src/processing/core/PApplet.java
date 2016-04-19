@@ -2034,16 +2034,6 @@ public class PApplet extends Object implements PConstants, Runnable {
 
   /** Not official API, not guaranteed to work in the future. */
   public boolean canDraw() {
-//    boolean res = g != null && surfaceReady && !paused && (looping || redraw);
-//    if (frameCount % 15 == 0) {
-//      System.out.println("canDraw " + this + ": " + res);
-//      System.out.println("  g: " + g);
-//      System.out.println("  surfaceReady: " + surfaceReady);
-//      System.out.println("  paused: " + paused);
-//      System.out.println("  looping: " + looping);
-//      System.out.println("  redraw: " + redraw);
-//    }
-//    return res;
     return g != null && surfaceReady && !paused && (looping || redraw);
   }
 
@@ -3146,7 +3136,6 @@ public class PApplet extends Object implements PConstants, Runnable {
    * will only notify listeners once. Register a dispose listener instead.
    */
   final public void dispose() {
-    System.out.println("disposing sketch");
     // moved here from stop()
     finished = true;  // let the sketch know it is shut down time
 

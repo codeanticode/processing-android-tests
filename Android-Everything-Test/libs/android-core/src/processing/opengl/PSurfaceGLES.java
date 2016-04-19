@@ -10,7 +10,6 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.opengl.GLES20;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
