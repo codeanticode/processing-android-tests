@@ -7,4 +7,4 @@ Available tests using new architecture for core library:
 * Android-Wallpaper-Test2: wallpaper sketch, Android Studio project with core library included as pre-built jar
 * Android-Cardboard-Test:	cardboard sketch, Android Studio project with core library included as full source
 * Android-WatchFace-Test:	watch face sketch, Android Studio project with core library included as full source
-
+* Android-Everything-Test: all of the above in a single Android Studio project with core library included as full source
