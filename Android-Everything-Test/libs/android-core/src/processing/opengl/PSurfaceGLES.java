@@ -56,8 +56,8 @@ public class PSurfaceGLES implements PSurface, PConstants {
 
   /** The renderer object driving the rendering loop, analogous to the
    * GLEventListener in JOGL */
-  protected static AndroidRenderer renderer;
-  protected static AndroidConfigChooser configChooser;
+  static protected AndroidRenderer renderer;
+  static protected AndroidConfigChooser configChooser;
 
   public PSurfaceGLES(PGraphics graphics, PContainer container) {
     this.sketch = graphics.parent;

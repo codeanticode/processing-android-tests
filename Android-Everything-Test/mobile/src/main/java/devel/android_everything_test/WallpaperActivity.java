@@ -37,7 +37,9 @@ public class WallpaperActivity extends Activity {
                 intent.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
               }
 
-              startActivity(intent);
+//              startActivity(intent);
+//              startActivityForResult(intent, 0);
+                startService(intent);
 
 //              Intent intent;
 //              if (Build.VERSION.SDK_INT > 15) {
@@ -48,7 +50,7 @@ public class WallpaperActivity extends Activity {
 //              } else {
 //                i.setAction(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER);
 //              }
-//              startActivityForResult(i, 0);
+//
 
 
             }

@@ -692,7 +692,13 @@ public class PGraphicsOpenGL extends PGraphics {
   @Override
   // Android only
   public void requestDraw() {
+//      if (parent.frameCount % 15 == 0) {
+//        System.out.println("primaryGraphics: " + primaryGraphics);
+//      }
     if (primaryGraphics) {
+//      if (parent.frameCount % 15 == 0) {
+//        System.out.println("initialized: " + initialized);
+//      }
       if (initialized) {
         if (sized) pgl.reinitSurface();
         if (parent.canDraw()) pgl.requestDraw();
