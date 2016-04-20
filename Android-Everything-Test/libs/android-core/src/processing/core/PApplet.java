@@ -467,23 +467,6 @@ public class PApplet extends Object implements PConstants, Runnable {
     height = displayHeight;
     println("setting width/height to " + width + " " + height);
 
-//    println("density is " + dm.density);
-//    println("densityDpi is " + dm.densityDpi);
-//    if (DEBUG) println("display metrics: " + dm);
-
-    //println("screen size is " + screenWidth + "x" + screenHeight);
-
-//    LinearLayout layout = new LinearLayout(this);
-//    layout.setOrientation(LinearLayout.VERTICAL | LinearLayout.HORIZONTAL);
-//    viewGroup = new ViewGroup();
-//    surfaceView.setLayoutParams();
-//    viewGroup.setLayoutParams(LayoutParams.)
-//    RelativeLayout layout = new RelativeLayout(this);
-//    RelativeLayout overallLayout = new RelativeLayout(this);
-//    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.FILL_PARENT);
-//lp.addRule(RelativeLayout.RIGHT_OF, tv1.getId());
-//    layout.setGravity(RelativeLayout.CENTER_IN_PARENT);
-
     handleSettings();
     println("Handled setting");
 
@@ -497,36 +480,6 @@ public class PApplet extends Object implements PConstants, Runnable {
     surface = g.createSurface(container, view);
     println("Created surface");
 
-
-    /*
-    // Get renderer name and class
-    String rendererName = sketchRenderer();
-    Class<?> rendererClass = null;
-    try {
-      rendererClass = Class.forName(rendererName);
-    } catch (ClassNotFoundException exception) {
-      String message = String.format(
-        "Error: Could not resolve renderer class name: %s", rendererName);
-      throw new RuntimeException(message, exception);
-    }
-
-    if (rendererName.equals(JAVA2D)) {
-      // JAVA2D renderer
-      surfaceView = new SketchSurfaceView(activity, sw, sh,
-        (Class<? extends PGraphicsAndroid2D>) rendererClass);
-    } else if (PGraphicsOpenGL.class.isAssignableFrom(rendererClass)) {
-      // P2D, P3D, and any other PGraphicsOpenGL-based renderer
-      surface = new PSurfaceGLES(this, activity, rendererClass, sw, sh);
-    } else {
-      // Anything else
-      String message = String.format(
-        "Error: Unsupported renderer class: %s", rendererName);
-      throw new RuntimeException(message);
-    }
-
-*/
-
-
     //set smooth level
     if (smooth == 0) {
       g.noSmooth();
@@ -534,102 +487,18 @@ public class PApplet extends Object implements PConstants, Runnable {
       g.smooth(smooth);
     }
 
-//    g = ((SketchSurfaceView) surfaceView).getGraphics();
-
-//    surfaceView.setLayoutParams(new LayoutParams(sketchWidth(), sketchHeight()));
-
-//    layout.addView(surfaceView);
-//    surfaceView.setVisibility(1);
-//    println("visibility " + surfaceView.getVisibility() + " " + SurfaceView.VISIBLE);
-//    layout.addView(surfaceView);
-//    AttributeSet as = new AttributeSet();
-//    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(layout, as);
-
-//    lp.addRule(android.R.styleable.ViewGroup_Layout_layout_height,
-//    layout.add
-    //lp.addRule(, arg1)
-    //layout.addView(surfaceView, sketchWidth(), sketchHeight());
-
-//      new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-//        RelativeLayout.LayoutParams.FILL_PARENT);
-
-
     surface.initView(sw, sh);
 
-
-
-
-
-    /*
-    // Here we use Honeycomb API (11+) to hide (in reality, just make the status icons into small dots)
-    // the status bar. Since the core is still built against API 7 (2.1), we use introspection to get
-    // the setSystemUiVisibility() method from the view class.
-    Method visibilityMethod = null;
-    try {
-      visibilityMethod = surfaceView.getClass().getMethod("setSystemUiVisibility", new Class[] { int.class});
-    } catch (NoSuchMethodException e) {
-      // Nothing to do. This means that we are running with a version of Android previous to Honeycomb.
-    }
-    if (visibilityMethod != null) {
-      try {
-        // This is equivalent to calling:
-        //surfaceView.setSystemUiVisibility(View.STATUS_BAR_HIDDEN);
-        // The value of View.STATUS_BAR_HIDDEN is 1.
-        visibilityMethod.invoke(surfaceView, new Object[] { 1 });
-      } catch (InvocationTargetException e) {
-      } catch (IllegalAccessException e) {
-      }
-    }
-    window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    */
-
-
-//    layout.addView(surfaceView, lp);
-//    surfaceView.setLayoutParams(new LayoutParams(sketchWidth(), sketchHeight()));
-
-//    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams()
-//    layout.addView(surfaceView, new LayoutParams(arg0)
-
-    // TODO probably don't want to set these here, can't we wait for surfaceChanged()?
-    // removing this in 0187
-//    width = screenWidth;
-//    height = screenHeight;
-
-//    int left = (screenWidth - iwidth) / 2;
-//    int right = screenWidth - (left + iwidth);
-//    int top = (screenHeight - iheight) / 2;
-//    int bottom = screenHeight - (top + iheight);
-//    surfaceView.setPadding(left, top, right, bottom);
-    // android:layout_width
-
-//    window.setContentView(surfaceView);  // set full screen
-
-    // code below here formerly from init()
-
-    //millisOffset = System.currentTimeMillis(); // moved to the variable declaration
-
     finished = false; // just for clarity
-
     // this will be cleared by draw() if it is not overridden
     looping = true;
     redraw = true;  // draw this guy once
-//    firstMotion = true;
 
     sketchPath = surface.getFilesDir().getAbsolutePath();
 
-//    Looper.prepare();
     handler = new Handler();
-//    println("calling loop()");
-//    Looper.loop();
-//    println("done with loop() call, will continue...");
     println("Done with init surface");
   }
-
-
-//  public Activity getActivity() {
-//    return activity;
-//  }
 
 
   public void onResume() {
@@ -639,6 +508,7 @@ public class PApplet extends Object implements PConstants, Runnable {
     paused = false;
     handleMethods("resume");
     //start();  // kick the thread back on
+    surface.resumeThread();
     resume();
 //    surfaceView.onResume();
   }
@@ -649,6 +519,7 @@ public class PApplet extends Object implements PConstants, Runnable {
 //    System.out.println("PApplet.onPause() called");
     paused = true;
     handleMethods("pause");
+    surface.pauseThread();
     pause();  // handler for others to write
 //  synchronized (this) {
 //  paused = true;
@@ -714,22 +585,6 @@ public class PApplet extends Object implements PConstants, Runnable {
 
   public void settings() {
     //It'll be empty. Will be overridden by user's sketch class.
-  }
-
-
-  /**
-   * Developers can override here to save state. The 'paused' variable will be
-   * set before this function is called.
-   */
-  public void pause() {
-  }
-
-
-  /**
-   * Developers can override here to restore state. The 'paused' variable
-   * will be cleared before this function is called.
-   */
-  public void resume() {
   }
 
 
@@ -995,10 +850,11 @@ public class PApplet extends Object implements PConstants, Runnable {
     finished = false;
     paused = false; // unpause the thread
 
-    if (thread == null) {
-      thread = new Thread(this, "Animation Thread");
-      thread.start();
-    }
+    surface.resumeThread();
+//    if (thread == null) {
+//      thread = new Thread(this, "Animation Thread");
+//      thread.start();
+//    }
   }
 
 
@@ -1019,6 +875,21 @@ public class PApplet extends Object implements PConstants, Runnable {
     //TODO listeners
   }
 
+
+  /**
+   * Developers can override here to save state. The 'paused' variable will be
+   * set before this function is called.
+   */
+  public void pause() {
+  }
+
+
+  /**
+   * Developers can override here to restore state. The 'paused' variable
+   * will be cleared before this function is called.
+   */
+  public void resume() {
+  }
 
   /**
    * Called by the browser or applet viewer to inform this applet

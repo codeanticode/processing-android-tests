@@ -128,9 +128,8 @@ public class PWallpaper extends WallpaperService implements PContainer {
       // By default we don't get touch events, so enable them.
       setTouchEventsEnabled(true);
 
-      scheduleNextDraw();
-
-//        sketch.start();
+//      scheduleNextDraw();
+        sketch.start();
     }
 
     @Override
@@ -165,32 +164,6 @@ public class PWallpaper extends WallpaperService implements PContainer {
           pauseNextDraw();
         }
       }
-/*
-      if (visible) {
-        if (sketch != null) {
-          System.out.println("Resume sketch on visibility change " + sketch);
-          sketch.onResume();
-//          ((GLWallpaperSurfaceView)sketch.surface.getSurfaceView()).onResume();
-          scheduleNextDraw();
-//          handler.postDelayed(drawRunnable, 40);
-        }
-      } else{
-        PApplet sketchToPause = null;
-        if (deadSketch != null) {
-          sketchToPause = deadSketch;
-        } else {
-          handler.removeCallbacks(drawRunnable);
-          System.out.println("Removed handler draw callback!!!!!!!!!!!!!!!!");
-          sketchToPause = sketch;
-        }
-
-        if (sketchToPause != null) {
-          System.out.println("Pausing sketch in visibility change " + sketchToPause);
-          sketchToPause.onPause();
-//          ((GLWallpaperSurfaceView)sketchToPause.surface.getSurfaceView()).onResume();
-        }
-      }
-      */
     }
 
     /*
@@ -199,13 +172,6 @@ public class PWallpaper extends WallpaperService implements PContainer {
      */
     @Override
     public void onTouchEvent(MotionEvent event) {
-//      if (event.getAction() == MotionEvent.ACTION_MOVE) {
-//        mTouchX = event.getX();
-//        mTouchY = event.getY();
-//      } else {
-//        mTouchX = -1;
-//        mTouchY = -1;
-//      }
       if (sketch != null) {
         sketch.surfaceTouchEvent(event);
       }
@@ -249,32 +215,11 @@ public class PWallpaper extends WallpaperService implements PContainer {
 //        Log.d(TAG, "onDestroy()");
 //      }
 //
-//      Log.d(TAG, "onDestroy()");
       super.onDestroy();
       pauseNextDraw();
       view.onDestroy();
       sketch.onDestroy();
-
-
-      /*
-      if (deadSketch != null) {
-//        System.out.println("will destroy dead sketch " + deadSketch);
-
-        System.out.println("will destroy dead sketch " + deadSketch);
-        deadSketch.onDestroy();
-        deadSketch = null;
-      } else {
-        System.out.println("will destroy sketch " + sketch);
-        handler.removeCallbacks(drawRunnable);
-        System.out.println("Removed handler draw callback!!!!!!!!!!!!!!!!");
-
-        sketch.onDestroy();
-        sketch = null;
-      }
-      */
     }
-
-
 
 
     public class GLWallpaperSurfaceView extends GLSurfaceView {

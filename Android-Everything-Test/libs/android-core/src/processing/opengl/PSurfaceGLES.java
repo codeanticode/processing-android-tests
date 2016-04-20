@@ -35,6 +35,7 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PSurface;
+import android.os.Handler;
 
 public class PSurfaceGLES implements PSurface, PConstants {
 
@@ -117,6 +118,10 @@ public class PSurfaceGLES implements PSurface, PConstants {
   public SurfaceView getSurfaceView() {
     return surface;
   }
+
+
+
+  // TODO: GL Surface view... should we keep it here or each container implements it own?
 
   public class SketchSurfaceViewGL extends GLSurfaceView {
     PGraphicsOpenGL g3;
@@ -398,6 +403,81 @@ public class PSurfaceGLES implements PSurface, PConstants {
 //    surface.onDestroy();
   }
 
+
+  ///////////////////////////////////////////////////////////
+
+  // Thread handling
+  // http://stackoverflow.com/questions/6964011/handler-vs-asynctask-vs-thread
+  // http://stackoverflow.com/questions/3102203/handler-vs-thread
+    private final Handler handler = new Handler();
+
+    private final Runnable drawRunnable = new Runnable() {
+	  public void run() {
+//        if (sketch.frameCount % 15 == 0) {
+//          System.out.println("requesting draw for " + sketch);
+//        }
+        if (sketch != null) {
+          sketch.g.requestDraw();
+        }
+        scheduleNextDraw();
+      }
+	};
+
+    private void scheduleNextDraw() {
+      handler.removeCallbacks(drawRunnable);
+
+      int waitMillis = 1000 / 15;
+      if (sketch != null) {
+        final PSurfaceGLES glsurf = (PSurfaceGLES) sketch.surface;
+
+        float targetfps = glsurf.pgl.getFrameRate();
+        float targetMillisPerFrame = 1000 / targetfps;
+
+//            float actualFps = sketch.frameRate;
+//            float actualMillisPerFrame = 1000 / actualFps;
+//            int waitMillis = (int)PApplet.max(0, targetMillisPerFrame - actualMillisPerFrame);
+        waitMillis = (int) targetMillisPerFrame;
+      }
+
+//      if (sketch.frameCount % 15 == 0) {
+//        System.out.println("scheduling next draw for " + sketch);
+//      }
+      handler.postDelayed(drawRunnable, waitMillis);
+    }
+
+  private void pauseNextDraw() {
+      handler.removeCallbacks(drawRunnable);
+    }
+
+  public void startThread() {
+    scheduleNextDraw();
+  }
+
+  /**
+   * On the next trip through the animation thread, things should go sleepy-bye.
+   * Does not pause the thread immediately because that needs to happen on the
+   * animation thread itself, so fires on the next trip through draw().
+   */
+  public void pauseThread() {
+    pauseNextDraw();
+  }
+
+  public void resumeThread() {
+    scheduleNextDraw();
+  }
+
+  /**
+   * Stop the animation thread (set it null)
+   * @return false if already stopped
+   */
+  public boolean stopThread() {
+    pauseNextDraw();
+    return true;
+  }
+
+  public boolean isStopped() {
+    return handler.hasMessages(0); // probably not...
+  }
 
   ///////////////////////////////////////////////////////////
 

@@ -36,5 +36,25 @@ public interface PSurface {
 
   public InputStream openFileInput(String filename);
 
+   /** Start the animation thread */
+  public void startThread();
+
+  /**
+   * On the next trip through the animation thread, things should go sleepy-bye.
+   * Does not pause the thread immediately because that needs to happen on the
+   * animation thread itself, so fires on the next trip through draw().
+   */
+  public void pauseThread();
+
+  public void resumeThread();
+
+  /**
+   * Stop the animation thread (set it null)
+   * @return false if already stopped
+   */
+  public boolean stopThread();
+
+  public boolean isStopped();
+
   public AssetManager getAssets();
 }
