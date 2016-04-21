@@ -378,6 +378,8 @@ public class PSurfaceGLES implements PSurface, PConstants {
 
       public void onDestroy() {
         super.onDetachedFromWindow();
+        // don't think i want to call stop() from here, since it might be swapping renderers
+        //      stop();
       }
 
 
@@ -392,24 +394,76 @@ public class PSurfaceGLES implements PSurface, PConstants {
         sketch.surfaceChanged();
       }
 
-      /*
-      @Override
-      public boolean onTouchEvent(MotionEvent event) {
-        return sketch.surfaceTouchEvent(event);
+    // part of SurfaceHolder.Callback
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+      super.surfaceCreated(holder);
+      if (PApplet.DEBUG) {
+        System.out.println("surfaceCreated()");
+      }
+    }
+
+
+    // part of SurfaceHolder.Callback
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+      super.surfaceDestroyed(holder);
+      if (PApplet.DEBUG) {
+        System.out.println("surfaceDestroyed()");
       }
 
-      @Override
-      public boolean onKeyDown(int code, android.view.KeyEvent event) {
-        sketch.surfaceKeyDown(code, event);
-        return super.onKeyDown(code, event);
-      }
 
-      @Override
-      public boolean onKeyUp(int code, android.view.KeyEvent event) {
-        sketch.surfaceKeyUp(code, event);
-        return super.onKeyUp(code, event);
-      }
-       */
+      // TODO: Check how to make sure of calling g3.dispose() when this call to
+      // surfaceDestoryed corresponds to the sketch being shut down instead of just
+      // taken to the background.
+
+      // For instance, something like this would be ok?
+      // The sketch is being stopped, so we dispose the resources.
+//      if (!paused) {
+//        g3.dispose();
+//      }
+    }
+
+
+    // Inform the view that the window focus has changed.
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+      super.onWindowFocusChanged(hasFocus);
+      sketch.surfaceWindowFocusChanged(hasFocus);
+//      super.onWindowFocusChanged(hasFocus);
+//      focused = hasFocus;
+//      if (focused) {
+////        println("got focus");
+//        focusGained();
+//      } else {
+////        println("lost focus");
+//        focusLost();
+//      }
+    }
+
+
+    // Do we need these to catpure events...?
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+      return sketch.surfaceTouchEvent(event);
+    }
+
+
+    @Override
+    public boolean onKeyDown(int code, android.view.KeyEvent event) {
+      sketch.surfaceKeyDown(code, event);
+      return super.onKeyDown(code, event);
+    }
+
+
+    @Override
+    public boolean onKeyUp(int code, android.view.KeyEvent event) {
+      sketch.surfaceKeyUp(code, event);
+      return super.onKeyUp(code, event);
+    }
+
+
+
     }
 
 /*

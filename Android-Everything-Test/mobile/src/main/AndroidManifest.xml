@@ -24,6 +24,16 @@
         </activity>
 -->
 
+        <activity
+            android:name=".FragmentActivity"
+            android:label="Fragment test" >
+            <intent-filter>
+              <action android:name="android.intent.action.MAIN" />
+              <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
         <service
             android:name=".WallpaperService"
             android:label="Wallpaper Test"
@@ -36,5 +46,6 @@
                 android:resource="@xml/wallpaper" />
         </service>
     </application>
+
 
 </manifest>

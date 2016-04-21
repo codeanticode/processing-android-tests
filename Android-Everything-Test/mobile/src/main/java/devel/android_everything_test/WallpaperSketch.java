@@ -7,9 +7,9 @@ import processing.core.PApplet;
 import processing.core.PFont;
 
 public class WallpaperSketch extends PApplet {
-  String TAG = "WallpaperSketch";
   int delay = 5000;
   PFont fontA;
+  String TAG = "WallpaperSketch";
   int r, g, b;
 
 
@@ -27,19 +27,21 @@ public class WallpaperSketch extends PApplet {
     r = (int)random(255);
     g = (int)random(255);
     b = (int)random(255);
+    background(r, g, b);
   }
 
   public void draw() {
-    background(r, g, b);
+
     strokeWeight(5);
     line(0, 0, mouseX, mouseY);
     line(width, 0, mouseX, mouseY);
     line(0, height, mouseX, mouseY);
     line(width, height, mouseX, mouseY);
 //    text("WALLPAPER " + frameCount,80,80,width,100);
-    float x = random(0, width);
-    float y = random(0, height);
-    ellipse(x, y, 50, 50);
+
+//    float x = random(0, width);
+//    float y = random(0, height);
+//    ellipse(x, y, 50, 50);
 
 //    if (frameCount % 15 == 0) System.out.println("draw " + this);
 
