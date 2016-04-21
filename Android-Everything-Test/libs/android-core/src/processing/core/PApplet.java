@@ -455,7 +455,7 @@ public class PApplet extends Object implements PConstants, Runnable {
 
   }
 
-  public void initSurface(PContainer container, SurfaceView view) {
+  public void initSurface(PContainer container, SurfaceHolder holder) {
     if (DEBUG) println("onCreateView() happening here: " + Thread.currentThread().getName());
 
     container.initDimensions();
@@ -477,7 +477,7 @@ public class PApplet extends Object implements PConstants, Runnable {
     println("Renderer " + rendererName);
     g = makeGraphics(sw, sh, rendererName, true);
     println("Created renderer");
-    surface = g.createSurface(container, view);
+    surface = g.createSurface(container, holder);
     println("Created surface");
 
     //set smooth level

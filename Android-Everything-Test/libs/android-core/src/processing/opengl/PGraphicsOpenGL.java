@@ -670,8 +670,8 @@ public class PGraphicsOpenGL extends PGraphics {
 
   @Override
   // Android only
-  public PSurface createSurface(PContainer container, SurfaceView view) {  // ignore
-    return new PSurfaceGLES(this, container, view);
+  public PSurface createSurface(PContainer container, SurfaceHolder holder) {  // ignore
+    return new PSurfaceGLES(this, container, holder);
   }
 
 

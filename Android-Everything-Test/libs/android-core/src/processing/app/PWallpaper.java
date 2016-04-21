@@ -27,7 +27,7 @@ public class PWallpaper extends WallpaperService implements PContainer {
 //  private PApplet sketch = null;
   private PEngine engine;
 
-  private final Handler handler = new Handler();
+//  private final Handler handler = new Handler();
 
   public PWallpaper() {
   }
@@ -70,50 +70,6 @@ public class PWallpaper extends WallpaperService implements PContainer {
 
   public class PEngine extends Engine {
     private PApplet sketch = null;
-    private GLWallpaperSurfaceView view;
-
-    /*
-    // Some notes on how to control FPS:
-    // http://stackoverflow.com/questions/4772693/how-to-limit-framerate-when-using-androids-glsurfaceview-rendermode-continuousl
-    // https://github.com/LWJGL/lwjgl/blob/master/src/java/org/lwjgl/opengl/Sync.java
-    private final Runnable drawRunnable = new Runnable() {
-	  public void run() {
-//        if (sketch.frameCount % 15 == 0) {
-//          System.out.println("requesting draw for " + sketch);
-//        }
-        if (sketch != null) {
-          sketch.g.requestDraw();
-        }
-        scheduleNextDraw();
-      }
-	};
-
-    private void scheduleNextDraw() {
-      handler.removeCallbacks(drawRunnable);
-
-      int waitMillis = 1000 / 15;
-      if (sketch != null) {
-        final PSurfaceGLES glsurf = (PSurfaceGLES) sketch.surface;
-
-        float targetfps = glsurf.pgl.getFrameRate();
-        float targetMillisPerFrame = 1000 / targetfps;
-
-//            float actualFps = sketch.frameRate;
-//            float actualMillisPerFrame = 1000 / actualFps;
-//            int waitMillis = (int)PApplet.max(0, targetMillisPerFrame - actualMillisPerFrame);
-        waitMillis = (int) targetMillisPerFrame;
-      }
-
-//      if (sketch.frameCount % 15 == 0) {
-//        System.out.println("scheduling next draw for " + sketch);
-//      }
-      handler.postDelayed(drawRunnable, waitMillis);
-    }
-
-    private void pauseNextDraw() {
-      handler.removeCallbacks(drawRunnable);
-    }
-*/
 
     @Override
     public void onCreate(SurfaceHolder surfaceHolder) {
@@ -123,15 +79,16 @@ public class PWallpaper extends WallpaperService implements PContainer {
 
       sketch = createSketch();
       System.out.println("initializing sketch " + sketch);
-      view = new GLWallpaperSurfaceView(PWallpaper.this);
-      sketch.initSurface(PWallpaper.this, view);
-      view.initRenderer();
+
+      sketch.initSurface(PWallpaper.this, getSurfaceHolder());
+//      view = new GLWallpaperSurfaceView(PWallpaper.this, getSurfaceHolder());
+//      view.initRenderer();
 
       // By default we don't get touch events, so enable them.
       setTouchEventsEnabled(true);
 
 //      scheduleNextDraw();
-        sketch.start();
+      sketch.start();
     }
 
     @Override
@@ -219,18 +176,19 @@ public class PWallpaper extends WallpaperService implements PContainer {
 //
       super.onDestroy();
 //      pauseNextDraw();
-      view.onDestroy();
       sketch.onDestroy();
     }
 
 
     public class GLWallpaperSurfaceView extends GLSurfaceView {
       //      PGraphicsOpenGL g3;
-      SurfaceHolder surfaceHolder;
+      PContainer container;
+      SurfaceHolder holder;
 
       @SuppressWarnings("deprecation")
-      public GLWallpaperSurfaceView(Context context) {
+      public GLWallpaperSurfaceView(Context context, SurfaceHolder holder) {
         super(context);
+        this.holder = holder;
 
         // Check if the system supports OpenGL ES 2.0.
         final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -241,10 +199,9 @@ public class PWallpaper extends WallpaperService implements PContainer {
           throw new RuntimeException("OpenGL ES 2.0 is not supported by this device.");
         }
 
-        surfaceHolder = getHolder();
-        // are these two needed?
-        surfaceHolder.addCallback(this);
-        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
+        SurfaceHolder h = getHolder();
+        h.addCallback(this);
+        h.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 
         // Tells the default EGLContextFactory and EGLConfigChooser to create an GLES2 context.
         setEGLContextClientVersion(2);
@@ -268,11 +225,16 @@ public class PWallpaper extends WallpaperService implements PContainer {
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
       }
 
+
+
       @Override
       public SurfaceHolder getHolder() {
-        return getSurfaceHolder();
-     }
-
+        if (holder == null) {
+          return super.getHolder();
+        } else {
+          return holder;
+        }
+      }
 
       public void onDestroy() {
         super.onDetachedFromWindow();
