@@ -1,14 +1,15 @@
-package devel.watchfacetest;
+package devel.android_everything_test;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 
-public class Sketch extends PApplet {
+public class WatchFaceSketch extends PApplet {
     public void settings() {
-        fullScreen(P2D);
+        fullScreen(PConstants.P2D);
     }
 
     public void setup() {
-        background(160, 160, 160);
+        background(160, 60, 60);
     }
 
     public void draw() {
