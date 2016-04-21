@@ -72,7 +72,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
     } else if (container.getKind() == PContainer.WALLPAPER) {
       wallpaper = (WallpaperService)container;
       surface = new SketchSurfaceViewGL(wallpaper, holder);
-    } else if (container.getKind() == PContainer.WATCHFACE) {
+    } else if (container.getKind() == PContainer.WATCHFACE_GLES) {
       watchface = (Gles2WatchFaceService)container;
       surface = null;
     }
@@ -118,7 +118,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
       return activity.getAssets();
     } else if (container.getKind() == PContainer.WALLPAPER) {
       return wallpaper.getBaseContext().getAssets();
-    } else if (container.getKind() == PContainer.WATCHFACE) {
+    } else if (container.getKind() == PContainer.WATCHFACE_GLES) {
       return watchface.getBaseContext().getAssets();
     }
     return null;
@@ -193,7 +193,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
       return activity.getComponentName().getPackageName();
     } else if (container.getKind() == PContainer.WALLPAPER) {
       return wallpaper.getPackageName();
-    } else if (container.getKind() == PContainer.WATCHFACE) {
+    } else if (container.getKind() == PContainer.WATCHFACE_GLES) {
       return watchface.getPackageName();
     }
     return "";
@@ -214,7 +214,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
       return activity.getFilesDir();
     } else if (container.getKind() == PContainer.WALLPAPER) {
       return wallpaper.getFilesDir();
-    } else if (container.getKind() == PContainer.WATCHFACE) {
+    } else if (container.getKind() == PContainer.WATCHFACE_GLES) {
       return watchface.getFilesDir();
 
     }
@@ -238,7 +238,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
       return activity.getFileStreamPath(path);
     } else if (container.getKind() == PContainer.WALLPAPER) {
       return wallpaper.getFileStreamPath(path);
-    } else if (container.getKind() == PContainer.WATCHFACE) {
+    } else if (container.getKind() == PContainer.WATCHFACE_GLES) {
       return watchface.getFileStreamPath(path);
     }
     return null;

@@ -1,7 +1,6 @@
 package processing.app;
 
 import android.content.Intent;
-import android.opengl.GLES20;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.wearable.watchface.Gles2WatchFaceService;
@@ -16,7 +15,7 @@ import processing.event.MouseEvent;
 
 import android.graphics.Rect;
 
-public class PWatchFace extends Gles2WatchFaceService implements PContainer {
+public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer {
 
   private DisplayMetrics metrics;
   private PApplet sketch;
@@ -40,7 +39,7 @@ public class PWatchFace extends Gles2WatchFaceService implements PContainer {
   }
 
   public int getKind() {
-    return WATCHFACE;
+    return WATCHFACE_GLES;
   }
 
   @Override
@@ -60,7 +59,7 @@ public class PWatchFace extends Gles2WatchFaceService implements PContainer {
     @Override
     public void onCreate(SurfaceHolder surfaceHolder) {
       super.onCreate(surfaceHolder);
-      setWatchFaceStyle(new WatchFaceStyle.Builder(PWatchFace.this)
+      setWatchFaceStyle(new WatchFaceStyle.Builder(PWatchFaceGLES.this)
               .setCardPeekMode(WatchFaceStyle.PEEK_MODE_SHORT)
               .setAmbientPeekMode(WatchFaceStyle.AMBIENT_PEEK_MODE_HIDDEN)
               .setBackgroundVisibility(WatchFaceStyle.BACKGROUND_VISIBILITY_INTERRUPTIVE)
@@ -70,7 +69,7 @@ public class PWatchFace extends Gles2WatchFaceService implements PContainer {
       timeTick = new Handler(Looper.myLooper());
       startTimerIfNecessary();
       if (sketch != null) {
-        sketch.initSurface(PWatchFace.this, null);
+        sketch.initSurface(PWatchFaceGLES.this, null);
         graphics = sketch.g;
       }
     }

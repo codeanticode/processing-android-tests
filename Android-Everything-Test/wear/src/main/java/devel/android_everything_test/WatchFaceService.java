@@ -1,9 +1,8 @@
 package devel.android_everything_test;
 
-import processing.app.PWatchFace;
 import processing.core.PApplet;
 
-public class WatchFaceService extends PWatchFace {
+public class WatchFaceService extends processing.app.PWatchFaceGLES {
     public WatchFaceService() {
         super();
         PApplet sketch = new WatchFaceSketch();
