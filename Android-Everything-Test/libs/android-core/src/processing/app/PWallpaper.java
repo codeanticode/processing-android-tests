@@ -72,6 +72,7 @@ public class PWallpaper extends WallpaperService implements PContainer {
     private PApplet sketch = null;
     private GLWallpaperSurfaceView view;
 
+    /*
     // Some notes on how to control FPS:
     // http://stackoverflow.com/questions/4772693/how-to-limit-framerate-when-using-androids-glsurfaceview-rendermode-continuousl
     // https://github.com/LWJGL/lwjgl/blob/master/src/java/org/lwjgl/opengl/Sync.java
@@ -112,6 +113,7 @@ public class PWallpaper extends WallpaperService implements PContainer {
     private void pauseNextDraw() {
       handler.removeCallbacks(drawRunnable);
     }
+*/
 
     @Override
     public void onCreate(SurfaceHolder surfaceHolder) {
@@ -158,10 +160,10 @@ public class PWallpaper extends WallpaperService implements PContainer {
       if (sketch != null) {
         if (visible) {
           sketch.onResume();
-          scheduleNextDraw();
+//          scheduleNextDraw();
         } else {
           sketch.onPause();
-          pauseNextDraw();
+//          pauseNextDraw();
         }
       }
     }
@@ -216,7 +218,7 @@ public class PWallpaper extends WallpaperService implements PContainer {
 //      }
 //
       super.onDestroy();
-      pauseNextDraw();
+//      pauseNextDraw();
       view.onDestroy();
       sketch.onDestroy();
     }

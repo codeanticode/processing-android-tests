@@ -259,7 +259,7 @@ public class PApplet extends Object implements PConstants, Runnable {
 //  public MotionEvent motionEvent;
 
   /** Post events to the main thread that created the Activity */
-  Handler handler;
+//  Handler handler;
 
   /**
    * Last key pressed.
@@ -367,7 +367,7 @@ public class PApplet extends Object implements PConstants, Runnable {
    */
   protected boolean exitCalled;
 
-  Thread thread;
+//  Thread thread;
 
   // messages to send if attached as an external vm
 
@@ -496,7 +496,7 @@ public class PApplet extends Object implements PConstants, Runnable {
 
     sketchPath = surface.getFilesDir().getAbsolutePath();
 
-    handler = new Handler();
+//    handler = new Handler();
     println("Done with init surface");
   }
 
@@ -528,8 +528,14 @@ public class PApplet extends Object implements PConstants, Runnable {
   }
 
 
-  private void tellPDE(final String message) {
-    Log.i(surface.getName(), "PROCESSING " + message);
+  public void onDestroy() {
+//    stop();
+    surface.stopThread();
+    dispose();
+    if (PApplet.DEBUG) {
+      System.out.println("PApplet.onDestroy() called");
+    }
+    //finish();
   }
 
 
@@ -543,13 +549,8 @@ public class PApplet extends Object implements PConstants, Runnable {
   }
 
 
-  public void onDestroy() {
-//    stop();
-    dispose();
-    if (PApplet.DEBUG) {
-      System.out.println("PApplet.onDestroy() called");
-    }
-    //finish();
+  private void tellPDE(final String message) {
+    Log.i(surface.getName(), "PROCESSING " + message);
   }
 
 
@@ -850,7 +851,7 @@ public class PApplet extends Object implements PConstants, Runnable {
     finished = false;
     paused = false; // unpause the thread
 
-    surface.resumeThread();
+    surface.startThread();
 //    if (thread == null) {
 //      thread = new Thread(this, "Animation Thread");
 //      thread.start();
@@ -1715,7 +1716,7 @@ public class PApplet extends Object implements PConstants, Runnable {
     // animation thread yields to other running threads.
     final int NO_DELAYS_PER_YIELD = 15;
 
-    while ((Thread.currentThread() == thread) && !finished) {
+    while (/*(Thread.currentThread() == thread) &&*/  !finished) {
 
       while (paused) {
         try{
@@ -1725,27 +1726,8 @@ public class PApplet extends Object implements PConstants, Runnable {
         }
       }
 
-      // Don't resize the renderer from the EDT (i.e. from a ComponentEvent),
-      // otherwise it may attempt a resize mid-render.
-//      if (resizeRequest) {
-//        resizeRenderer(resizeWidth, resizeHeight);
-//        resizeRequest = false;
-//      }
-
       // render a single frame
       if (g != null) g.requestDraw();
-//      g.requestDraw();
-//      surfaceView.requestDraw();
-
-      // removed in android
-//      if (frameCount == 1) {
-//        // Call the request focus event once the image is sure to be on
-//        // screen and the component is valid. The OpenGL renderer will
-//        // request focus for its canvas inside beginDraw().
-//        // http://java.sun.com/j2se/1.4.2/docs/api/java/awt/doc-files/FocusSpec.html
-//        //println("requesting focus");
-//        requestFocus();
-//      }
 
       // wait for update & paint to happen before drawing next frame
       // this is necessary since the drawing is sometimes in a
@@ -2968,7 +2950,8 @@ public class PApplet extends Object implements PConstants, Runnable {
    */
   public void exit() {
 //    println("exit() called");
-    if (thread == null) {
+//    if (thread == null) {
+    if (surface.isStopped()) {
       // exit immediately, stop() has already been called,
       // meaning that the main thread has long since exited
       exit2();
@@ -3011,8 +2994,8 @@ public class PApplet extends Object implements PConstants, Runnable {
     finished = true;  // let the sketch know it is shut down time
 
     // don't run stop and disposers twice
-    if (thread == null) return;
-    thread = null;
+//    if (thread == null) return;
+//    thread = null;
 
     // call to shut down renderer, in case it needs it (pdf does)
     if (surface != null) surface.dispose();
