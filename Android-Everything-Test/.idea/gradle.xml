@@ -11,6 +11,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/cardboardtest" />
+            <option value="$PROJECT_DIR$/fragmenttest" />
             <option value="$PROJECT_DIR$/libs" />
             <option value="$PROJECT_DIR$/libs/android-core" />
             <option value="$PROJECT_DIR$/libs/processing-cardboard" />

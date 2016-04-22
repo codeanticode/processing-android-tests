@@ -1,4 +1,4 @@
-package devel.android_everything_test;
+package devel.fragmenttest;
 
 import android.util.Log;
 import processing.core.PApplet;
@@ -19,6 +19,7 @@ public class FragmentSketch extends PApplet {
 
   public void draw() {
     background(157);
+    lights();
     translate(width / 2, height / 2);
     rotateX(angle);
     rotateY(angle);
