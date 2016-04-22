@@ -23,7 +23,6 @@ public class PCardboard extends CardboardActivity implements PContainer {
   
   private DisplayMetrics metrics;
   private PApplet sketch;
-  private GLCardboardSurfaceView view;
 //  private CardboardView cardboardView;
 
   public PCardboard() {
@@ -59,102 +58,14 @@ public class PCardboard extends CardboardActivity implements PContainer {
   public void init(PApplet sketch) {
     setSketch(sketch);
     if (sketch != null) {
-      view = new GLCardboardSurfaceView(this);
-      view.setRestoreGLStateEnabled(false);
-      view.setDistortionCorrectionEnabled(false);
-      //cardboardView.setDistortionCorrectionEnabled(true);
-      view.setChromaticAberrationCorrectionEnabled(false);
       //cardboardView.setChromaticAberrationCorrectionEnabled(true);
       //cardboardView.setVRModeEnabled(false); // sets Monocular mode
-      sketch.initSurface(PCardboard.this, view);
-      view.initRenderer();
-      setCardboardView(view);
+      sketch.initSurface(PCardboard.this, null);
+
 
       // Don't start Papplet's animation thread bc cardboard will drive rendering
       // continuously
-//      sketch.start();
-    }
-  }
-
-  public class GLCardboardSurfaceView extends CardboardView {
-    PGraphicsOpenGL g3;
-    SurfaceHolder surfaceHolder;
-
-    public GLCardboardSurfaceView(Context context) {
-      super(context);
-
-      // Check if the system supports OpenGL ES 2.0.
-      final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-      final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-      final boolean supportsGLES2 = configurationInfo.reqGlEsVersion >= 0x20000;
-
-      if (!supportsGLES2) {
-        throw new RuntimeException("OpenGL ES 2.0 is not supported by this device.");
-      }
-
-      surfaceHolder = getHolder();
-      // are these two needed?
-      surfaceHolder.addCallback(this);
-      surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-
-      // Tells the default EGLContextFactory and EGLConfigChooser to create an GLES2 context.
-      setEGLContextClientVersion(2);
-      setPreserveEGLContextOnPause(true);
-
-      setFocusable(true);
-      setFocusableInTouchMode(true);
-      requestFocus();
-    }
-
-    public void initRenderer() {
-      PSurfaceCardboard surf = (PSurfaceCardboard)(sketch.surface);
-      int quality = sketch.sketchQuality();
-      if (1 < quality) {
-        setEGLConfigChooser(surf.getConfigChooser(quality));
-      }
-      // The renderer can be set only once.
-//      setRenderer(surf.getCardboardRenderer());
-      setRenderer(surf.getCardboardStereoRenderer());
-//
-      // Cardboard needs to run with its own loop.
-      setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-//      setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-      super.surfaceChanged(holder, format, w, h);
-
-      if (PApplet.DEBUG) {
-        System.out.println("SketchSurfaceView3D.surfaceChanged() " + w + " " + h);
-      }
-      sketch.surfaceChanged();
-//      width = w;
-//      height = h;
-//      g.setSize(w, h);
-
-      // No need to call g.setSize(width, height) b/c super.surfaceChanged()
-      // will trigger onSurfaceChanged in the renderer, which calls setSize().
-      // -- apparently not true? (100110)
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-      return sketch.surfaceTouchEvent(event);
-    }
-
-
-    @Override
-    public boolean onKeyDown(int code, android.view.KeyEvent event) {
-      sketch.surfaceKeyDown(code, event);
-      return super.onKeyDown(code, event);
-    }
-
-
-    @Override
-    public boolean onKeyUp(int code, android.view.KeyEvent event) {
-      sketch.surfaceKeyUp(code, event);
-      return super.onKeyUp(code, event);
+      sketch.start();
     }
   }
 
@@ -177,16 +88,14 @@ public class PCardboard extends CardboardActivity implements PContainer {
    @Override
    public void onResume() {
      super.onResume();
-     view.onResume();
-//     sketch.onResume();
+     sketch.onResume();
    }
 
 
    @Override
    public void onPause() {
      super.onPause();
-     view.onPause();
-//     sketch.onPause();
+     sketch.onPause();
    }
 
 
@@ -200,14 +109,13 @@ public class PCardboard extends CardboardActivity implements PContainer {
    @Override
    public void onStart() {
      super.onStart();
-//     sketch.onStart();
+     sketch.onStart();
    }
 
 
    @Override
    public void onStop() {
-//     sketch.onStop();
+     sketch.onStop();
      super.onStop();
    }
-
 }

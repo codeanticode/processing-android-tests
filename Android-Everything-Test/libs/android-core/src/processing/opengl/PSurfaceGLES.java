@@ -54,11 +54,14 @@ public class PSurfaceGLES implements PSurface, PConstants {
 
   public PGLES pgl;
 
-
   /** The renderer object driving the rendering loop, analogous to the
    * GLEventListener in JOGL */
   protected AndroidRenderer renderer;
   protected AndroidConfigChooser configChooser;
+
+  public PSurfaceGLES() {
+
+  }
 
   public PSurfaceGLES(PGraphics graphics, PContainer container, SurfaceHolder holder) {
     this.sketch = graphics.parent;
@@ -441,175 +444,24 @@ public class PSurfaceGLES implements PSurface, PConstants {
 //      }
     }
 
-
     // Do we need these to catpure events...?
     @Override
     public boolean onTouchEvent(MotionEvent event) {
       return sketch.surfaceTouchEvent(event);
     }
 
-
     @Override
     public boolean onKeyDown(int code, android.view.KeyEvent event) {
       sketch.surfaceKeyDown(code, event);
       return super.onKeyDown(code, event);
     }
 
-
     @Override
     public boolean onKeyUp(int code, android.view.KeyEvent event) {
       sketch.surfaceKeyUp(code, event);
       return super.onKeyUp(code, event);
     }
-
-
-
-    }
-
-/*
-  public class SketchSurfaceViewGL extends GLSurfaceView {
-    PGraphicsOpenGL g3;
-    SurfaceHolder surfaceHolder;
-
-
-    @SuppressWarnings("deprecation")
-    public SketchSurfaceViewGL(Context context) {
-      super(context);
-      g3 = (PGraphicsOpenGL)graphics;
-
-      // Check if the system supports OpenGL ES 2.0.
-      final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-      final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
-      final boolean supportsGLES2 = configurationInfo.reqGlEsVersion >= 0x20000;
-
-      if (!supportsGLES2) {
-        throw new RuntimeException("OpenGL ES 2.0 is not supported by this device.");
-      }
-
-      surfaceHolder = getHolder();
-      // are these two needed?
-      surfaceHolder.addCallback(this);
-      surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-
-      // Tells the default EGLContextFactory and EGLConfigChooser to create an GLES2 context.
-      setEGLContextClientVersion(2);
-
-      int quality = sketch.sketchQuality();
-      if (1 < quality) {
-        setEGLConfigChooser(getConfigChooser(quality));
-      }
-
-      // The renderer can be set only once.
-      setRenderer(getRenderer());
-      setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
-      setPreserveEGLContextOnPause(true);
-
-      setFocusable(true);
-      setFocusableInTouchMode(true);
-      requestFocus();
-    }
-
-
-    public void onDestroy() {
-      super.onDetachedFromWindow();
-    }
-
-    // part of SurfaceHolder.Callback
-    @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-      super.surfaceCreated(holder);
-      if (PApplet.DEBUG) {
-        System.out.println("surfaceCreated()");
-      }
-    }
-
-
-    // part of SurfaceHolder.Callback
-    @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
-      super.surfaceDestroyed(holder);
-      if (PApplet.DEBUG) {
-        System.out.println("surfaceDestroyed()");
-      }
-
-
-      // TODO: Check how to make sure of calling g3.dispose() when this call to
-      // surfaceDestoryed corresponds to the sketch being shut down instead of just
-      // taken to the background.
-
-      // For instance, something like this would be ok?
-      // The sketch is being stopped, so we dispose the resources.
-//      if (!paused) {
-//        g3.dispose();
-//      }
-
-    }
-
-
-    @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-      super.surfaceChanged(holder, format, w, h);
-
-      if (PApplet.DEBUG) {
-        System.out.println("SketchSurfaceView3D.surfaceChanged() " + w + " " + h);
-      }
-      sketch.surfaceChanged();
-//      width = w;
-//      height = h;
-//      g.setSize(w, h);
-
-      // No need to call g.setSize(width, height) b/c super.surfaceChanged()
-      // will trigger onSurfaceChanged in the renderer, which calls setSize().
-      // -- apparently not true? (100110)
-    }
-
-
-
-    // Inform the view that the window focus has changed.
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-      super.onWindowFocusChanged(hasFocus);
-      sketch.surfaceWindowFocusChanged(hasFocus);
-//      super.onWindowFocusChanged(hasFocus);
-//      focused = hasFocus;
-//      if (focused) {
-////        println("got focus");
-//        focusGained();
-//      } else {
-////        println("lost focus");
-//        focusLost();
-//      }
-    }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-      return sketch.surfaceTouchEvent(event);
-    }
-
-
-    @Override
-    public boolean onKeyDown(int code, android.view.KeyEvent event) {
-      sketch.surfaceKeyDown(code, event);
-      return super.onKeyDown(code, event);
-    }
-
-
-    @Override
-    public boolean onKeyUp(int code, android.view.KeyEvent event) {
-      sketch.surfaceKeyUp(code, event);
-      return super.onKeyUp(code, event);
-    }
-
-
-    // don't think i want to call stop() from here, since it might be swapping renderers
-//    @Override
-//    protected void onDetachedFromWindow() {
-//      super.onDetachedFromWindow();
-//      stop();
-//    }
   }
-*/
 
   ///////////////////////////////////////////////////////////
 
