@@ -1,4 +1,4 @@
-package devel.android_everything_test;
+package devel.wallpapertest;
 
 
 import android.util.Log;
@@ -27,11 +27,10 @@ public class WallpaperSketch extends PApplet {
     r = (int)random(255);
     g = (int)random(255);
     b = (int)random(255);
-    background(r, g, b);
   }
 
   public void draw() {
-
+    background(r, g, b);
     strokeWeight(5);
     line(0, 0, mouseX, mouseY);
     line(width, 0, mouseX, mouseY);

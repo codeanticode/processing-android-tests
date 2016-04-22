@@ -1,1 +1,1 @@
-include ':mobile', ':wear', ':libs:android-core', ':libs:processing-cardboard', ':cardboardtest', ':fragmenttest'
+include ':wallpapertest', ':wear', ':libs:android-core', ':libs:processing-cardboard', ':cardboardtest', ':fragmenttest'

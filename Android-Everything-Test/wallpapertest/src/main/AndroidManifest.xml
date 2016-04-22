@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="devel.android_everything_test"
+<manifest package="devel.wallpapertest"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-feature android:name="android.software.live_wallpaper" />
 
-    <!-- Required to act as a custom watch face. -->
+    <!-- Required to act as a custom watch face.-->
     <uses-permission android:name="com.google.android.permission.PROVIDE_BACKGROUND"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
 

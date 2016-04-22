@@ -1,4 +1,4 @@
-package devel.android_everything_test;
+package devel.watchfacetest;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -9,7 +9,7 @@ public class WatchFaceSketch extends PApplet {
     }
 
     public void setup() {
-        background(160, 60, 60);
+        background(60, 60, 160);
     }
 
     public void draw() {

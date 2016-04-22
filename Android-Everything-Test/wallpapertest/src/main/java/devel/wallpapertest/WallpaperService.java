@@ -1,4 +1,4 @@
-package devel.android_everything_test;
+package devel.wallpapertest;
 
 import processing.app.PWallpaper;
 import processing.core.PApplet;

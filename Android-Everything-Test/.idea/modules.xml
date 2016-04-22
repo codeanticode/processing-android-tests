@@ -7,8 +7,8 @@
       <module fileurl="file://$PROJECT_DIR$/cardboardtest/cardboardtest.iml" filepath="$PROJECT_DIR$/cardboardtest/cardboardtest.iml" />
       <module fileurl="file://$PROJECT_DIR$/fragmenttest/fragmenttest.iml" filepath="$PROJECT_DIR$/fragmenttest/fragmenttest.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mobile/mobile.iml" filepath="$PROJECT_DIR$/mobile/mobile.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/processing-cardboard/processing-cardboard.iml" filepath="$PROJECT_DIR$/libs/processing-cardboard/processing-cardboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/wallpapertest/wallpapertest.iml" filepath="$PROJECT_DIR$/wallpapertest/wallpapertest.iml" />
       <module fileurl="file://$PROJECT_DIR$/wear/wear.iml" filepath="$PROJECT_DIR$/wear/wear.iml" />
     </modules>
   </component>
