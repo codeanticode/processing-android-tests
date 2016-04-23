@@ -48,7 +48,7 @@ public class PCardboard extends CardboardActivity implements PContainer {
   }
 
   public int getKind() {
-    return CARDBOARD;
+      return CARDBOARD;
   }
 
   public void setSketch(PApplet sketch) {
@@ -79,43 +79,49 @@ public class PCardboard extends CardboardActivity implements PContainer {
 //
 //  }
 
-   @Override
-   public void startActivity(Intent intent) {
-     // TODO Auto-generated method stub
+  @Override
+  public void startActivity(Intent intent) {
+    // TODO Auto-generated method stub
+  }
 
-   }
-
-   @Override
-   public void onResume() {
-     super.onResume();
-     sketch.onResume();
-   }
-
-
-   @Override
-   public void onPause() {
-     super.onPause();
-     sketch.onPause();
-   }
+  @Override
+  public void onResume() {
+    super.onResume();
+    sketch.onResume();
+  }
 
 
-   @Override
-   public void onDestroy() {
-     sketch.onDestroy();
-     super.onDestroy();
-   }
+  @Override
+  public void onPause() {
+    super.onPause();
+    sketch.onPause();
+  }
 
 
-   @Override
-   public void onStart() {
-     super.onStart();
-     sketch.onStart();
-   }
+  @Override
+  public void onDestroy() {
+    sketch.onDestroy();
+    super.onDestroy();
+  }
 
 
-   @Override
-   public void onStop() {
-     sketch.onStop();
-     super.onStop();
-   }
+  @Override
+  public void onStart() {
+    super.onStart();
+    sketch.onStart();
+  }
+
+
+  @Override
+  public void onStop() {
+    sketch.onStop();
+    super.onStop();
+  }
+
+  public void requestDraw() {
+  }
+
+  public boolean canDraw() {
+    return true;
+  }
 }

@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 21
     buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "devel.cardboardtest"
@@ -28,7 +28,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile fileTree(dir: 'libs/processing-cardboard/libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.2.1'
     compile project(':libs:android-core')
     compile project(':libs:processing-cardboard')
 }

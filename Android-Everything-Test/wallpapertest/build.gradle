@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 21
     buildToolsVersion "23.0.2"
     defaultConfig {
-        applicationId "devel.android_everything_test"
-        minSdkVersion 22
-        targetSdkVersion 22
+        applicationId 'devel.wallpapertest'
+        minSdkVersion 21
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }

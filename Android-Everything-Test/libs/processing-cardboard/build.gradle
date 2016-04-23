@@ -3,11 +3,11 @@ apply plugin: 'android-library'
 //    compile 'com.android.support:support-v4:19.0.0'
 //}
 android {
-    compileSdkVersion 23
+    compileSdkVersion 21
     buildToolsVersion "23.0.2"
     defaultConfig {
-        minSdkVersion 22
-        targetSdkVersion 22
+        minSdkVersion 21
+        targetSdkVersion 21
     }
     sourceSets {
         main {
@@ -39,8 +39,8 @@ android {
 
 
 dependencies {
-    compile project(':libs:android-core')
     //    compile files('libs/cardboard.jar')
+    compile project(':libs:android-core')
     // Local binary dependency
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
