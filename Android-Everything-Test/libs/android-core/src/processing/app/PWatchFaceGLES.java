@@ -16,13 +16,9 @@ import processing.event.MouseEvent;
 import android.graphics.Rect;
 
 public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer {
-
   private DisplayMetrics metrics;
   private PApplet sketch;
-  private PGraphics graphics;
-
-  private static final long TICK_PERIOD_MILLIS = 100;
-  private Handler timeTick;
+  private GLEngine engine;
 
   public void initDimensions() {
     metrics = new DisplayMetrics();
@@ -52,10 +48,22 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
 
   @Override
   public Engine onCreateEngine() {
-      return new Engine();
+    engine = new GLEngine();
+    return engine;
   }
 
-  private class Engine extends Gles2WatchFaceService.Engine {
+  public void requestDraw() {
+    engine.invalidateIfNecessary();
+  }
+
+  public boolean canDraw() {
+    return engine.isVisible() && !engine.isInAmbientMode();
+  }
+
+  private class GLEngine extends Gles2WatchFaceService.Engine {
+//    private static final long TICK_PERIOD_MILLIS = 100;
+//    private Handler timeTick;
+
     @Override
     public void onCreate(SurfaceHolder surfaceHolder) {
       super.onCreate(surfaceHolder);
@@ -66,14 +74,18 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
               .setShowSystemUiTime(false)
               .setAcceptsTapEvents(true)
               .build());
-      timeTick = new Handler(Looper.myLooper());
-      startTimerIfNecessary();
       if (sketch != null) {
         sketch.initSurface(PWatchFaceGLES.this, null);
-        graphics = sketch.g;
+//        graphics = sketch.g;
+        sketch.start();
       }
+
+//      timeTick = new Handler(Looper.myLooper());
+//      startTimerIfNecessary();
+
     }
 
+    /*
     private void startTimerIfNecessary() {
       timeTick.removeCallbacks(timeRunnable);
       if (isVisible() && !isInAmbientMode()) {
@@ -81,20 +93,22 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
       }
     }
 
+
     private final Runnable timeRunnable = new Runnable() {
       @Override
       public void run() {
         onSecondTick();
-
         if (isVisible() && !isInAmbientMode()) {
           timeTick.postDelayed(this, TICK_PERIOD_MILLIS);
         }
       }
     };
 
+
     private void onSecondTick() {
       invalidateIfNecessary();
     }
+*/
 
     private void invalidateIfNecessary() {
       if (isVisible() && !isInAmbientMode()) {
@@ -102,15 +116,18 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
       }
     }
 
+
+
     @Override
     public void onGlContextCreated() {
-        super.onGlContextCreated();
+      super.onGlContextCreated();
     }
 
     @Override
     public void onGlSurfaceCreated(int width, int height) {
       super.onGlSurfaceCreated(width, height);
-      graphics.setSize(width, height);
+//      graphics.setSize(width, height);
+      sketch.g.setSize(width, height);
       sketch.surfaceChanged();
     }
 
@@ -129,7 +146,7 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
       } else {
         sketch.onPause();
       }
-      startTimerIfNecessary();
+//      startTimerIfNecessary();
     }
 
     @Override
@@ -227,8 +244,6 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
       super.onDestroy();
       sketch.onDestroy();
     }
-
-
   }
 
 

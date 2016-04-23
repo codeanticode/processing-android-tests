@@ -219,7 +219,6 @@ public class PSurfaceGLES implements PSurface, PConstants {
       return wallpaper.getFilesDir();
     } else if (container.getKind() == PContainer.WATCHFACE_GLES) {
       return watchface.getFilesDir();
-
     }
     return null;
   }
@@ -248,7 +247,9 @@ public class PSurfaceGLES implements PSurface, PConstants {
   }
 
   public void dispose() {
-    ((SketchSurfaceViewGL)surface).onDestroy();
+    if (surface != null && surface instanceof SketchSurfaceViewGL) {
+      ((SketchSurfaceViewGL) surface).onDestroy();
+    }
   }
 
 
@@ -275,6 +276,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
 
   private void scheduleNextDraw() {
     handler.removeCallbacks(drawRunnable);
+    container.requestDraw();
     int waitMillis = 1000 / 15;
     if (sketch != null) {
       final PSurfaceGLES glsurf = (PSurfaceGLES) sketch.surface;
@@ -286,7 +288,9 @@ public class PSurfaceGLES implements PSurface, PConstants {
 //            int waitMillis = (int)PApplet.max(0, targetMillisPerFrame - actualMillisPerFrame);
       waitMillis = (int) targetMillisPerFrame;
     }
-    handler.postDelayed(drawRunnable, waitMillis);
+    if (container.canDraw()) {
+      handler.postDelayed(drawRunnable, waitMillis);
+    }
   }
 
 
