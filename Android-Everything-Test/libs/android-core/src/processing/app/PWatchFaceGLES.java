@@ -1,16 +1,14 @@
 package processing.app;
 
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.wearable.watchface.Gles2WatchFaceService;
+import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.WindowManager;
 import processing.core.PApplet;
-import processing.core.PGraphics;
 import processing.event.MouseEvent;
 
 import android.graphics.Rect;
@@ -117,19 +115,25 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
     }
 
 
-
     @Override
     public void onGlContextCreated() {
       super.onGlContextCreated();
     }
 
+
     @Override
     public void onGlSurfaceCreated(int width, int height) {
       super.onGlSurfaceCreated(width, height);
 //      graphics.setSize(width, height);
-      sketch.g.setSize(width, height);
+//      sketch.g.setSize(width, height);
+//      sketch.surfaceChanged();
+
+      sketch.displayHeight = width;
+      sketch.displayHeight = height;
+      sketch.g.setSize(sketch.sketchWidth(), sketch.sketchHeight());
       sketch.surfaceChanged();
     }
+
 
     @Override
     public void onAmbientModeChanged(boolean inAmbientMode) {
@@ -137,6 +141,7 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
 //      invalidate();
       // call new event handlers in sketch (?)
     }
+
 
     @Override
     public void onVisibilityChanged(boolean visible) {
@@ -149,33 +154,27 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
 //      startTimerIfNecessary();
     }
 
+
     @Override
     public void onPeekCardPositionUpdate(Rect rect) {
 
     }
+
 
     @Override
     public void onTimeTick() {
       invalidate();
     }
 
-    int frame = 0;
+
     @Override
     public void onDraw() {
       super.onDraw();
 
-//      GLES20.glClearColor(sketch.random(1), sketch.random(1), sketch.random(1), 1);
-//      GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-//      PApplet.println("FRAME: " + frame);
-//      frame++;
       PApplet.println("Calling handleDraw: " + sketch.width + " " + sketch.height);
       sketch.handleDraw();
-
-      // Draw every frame as long as we're visible and in interactive mode.
-//      if (isVisible() && !isInAmbientMode()) {
-//          invalidate();
-//      }
     }
+
 
     @Override
     public void onTouchEvent(MotionEvent event) {
@@ -184,11 +183,12 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
       super.onTouchEvent(event);
     }
 
+
     @Override
     public void onTapCommand(
             @TapType int tapType, int x, int y, long eventTime) {
       switch (tapType) {
-        case Gles2WatchFaceService.TAP_TYPE_TOUCH:
+        case WatchFaceService.TAP_TYPE_TOUCH:
           // The system sends the first command, TAP_TYPE_TOUCH, when the user initially touches the screen
 //          if (withinTapRegion(x, y)) {
 //            // Provide visual feedback of touch event
@@ -201,7 +201,7 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
           break;
 
 
-        case Gles2WatchFaceService.TAP_TYPE_TAP:
+        case WatchFaceService.TAP_TYPE_TAP:
           // Before sending the next command, the system judges whether the contact is a single tap,
           // which is the only gesture allowed. If the user immediately lifts their finger,
           // the system determines that a single tap took place, and forwards a TAP_TYPE_TAP event
@@ -220,7 +220,7 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements PContainer 
           invalidate();
           break;
 
-        case Gles2WatchFaceService.TAP_TYPE_TOUCH_CANCEL:
+        case WatchFaceService.TAP_TYPE_TOUCH_CANCEL:
           // If the user does not immediately lift their finger, the system forwards a
           // TAP_TYPE_TOUCH_CANCEL event. Once the user has triggered a TAP_TYPE_TOUCH_CANCEL event,
           // they cannot trigger a TAP_TYPE_TAP event until they make a new contact with the screen.

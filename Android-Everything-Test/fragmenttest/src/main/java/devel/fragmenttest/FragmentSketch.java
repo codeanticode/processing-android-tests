@@ -11,6 +11,7 @@ public class FragmentSketch extends PApplet {
 
   public void settings() {
     fullScreen(P3D);
+//    size(800, 1280, P3D);
   }
 
   public void setup() {
