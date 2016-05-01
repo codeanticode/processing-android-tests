@@ -10,21 +10,21 @@ public class FragmentSketch extends PApplet {
   float angle;
 
   public void settings() {
-    fullScreen(P3D);
-//    size(800, 1280, P3D);
+//    fullScreen(P3D);
+    size(1280, 800, P3D);
   }
 
   public void setup() {
-    frameRate(15);
+    orientation(LANDSCAPE);
   }
 
   public void draw() {
     background(157);
     lights();
-    translate(width / 2, height / 2);
+    translate(mouseX, mouseY);
     rotateX(angle);
     rotateY(angle);
-    box(500);
+    box(100);
     if (rotate) {
       angle += 0.01f;
     }
