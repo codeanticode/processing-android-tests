@@ -32,7 +32,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import processing.app.PContainer;
+import processing.android.AppComponent;
 import processing.opengl.PGL;
 import processing.opengl.PShader;
 import android.graphics.Color;
@@ -723,7 +723,7 @@ public class PGraphics extends PImage implements PConstants {
   }
 
 
-  public PSurface createSurface(PContainer container, SurfaceHolder holder) {  // ignore
+  public PSurface createSurface(AppComponent component, SurfaceHolder holder) {  // ignore
     return null;
   }
 
@@ -785,16 +785,16 @@ public class PGraphics extends PImage implements PConstants {
   /**
    * Some renderers have requirements re: when they are ready to draw.
    */
-  public boolean canDraw() {  // ignore
-    return true;
-  }
+//  public boolean canDraw() {  // ignore
+//    return true;
+//  }
 
 
   /**
    * Try to draw, or put a draw request on the queue.
    */
-  public void requestDraw() {  // ignore
-  }
+//  public void requestDraw() {  // ignore
+//  }
 
 
   /**

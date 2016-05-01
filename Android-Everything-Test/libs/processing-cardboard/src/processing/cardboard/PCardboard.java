@@ -13,12 +13,12 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import processing.app.PContainer;
+import processing.android.AppComponent;
 import processing.core.PApplet;
 import processing.opengl.PGraphicsOpenGL;
 
 // http://pastebin.com/6wPgFYhq
-public class PCardboard extends CardboardActivity implements PContainer {
+public class PCardboard extends CardboardActivity implements AppComponent {
   static public final int CARDBOARD = 3;
   
   private DisplayMetrics metrics;

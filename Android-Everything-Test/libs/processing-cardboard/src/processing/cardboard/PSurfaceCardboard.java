@@ -27,7 +27,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import processing.app.PContainer;
+import processing.android.AppComponent;
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.opengl.PGLES;
@@ -47,13 +47,13 @@ public class PSurfaceCardboard extends PSurfaceGLES {
   protected static AndroidCardboardRenderer cardboardRenderer;
   protected static AndroidCardboardStereoRenderer cardboardStereoRenderer;
 
-  public PSurfaceCardboard(PGraphics graphics, PContainer container, SurfaceHolder holder) {
+  public PSurfaceCardboard(PGraphics graphics, AppComponent component, SurfaceHolder holder) {
     this.sketch = graphics.parent;
     this.graphics = graphics;
-    this.container = container;
+    this.component = component;
     this.pgl = (PGLES)((PGraphicsOpenGL)graphics).pgl;
     
-    cardboard = (CardboardActivity)container;
+    cardboard = (CardboardActivity)component;
     pgc = (PGraphicsCardboard)graphics;
 
     glview = new GLCardboardSurfaceView(cardboard);
@@ -130,7 +130,7 @@ public class PSurfaceCardboard extends PSurfaceGLES {
   }
 
   public void setOrientation(int which) {
-    if (container.getKind() == PContainer.FRAGMENT) {
+    if (component.getKind() == AppComponent.FRAGMENT) {
       if (which == PORTRAIT) {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
       } else if (which == LANDSCAPE) {

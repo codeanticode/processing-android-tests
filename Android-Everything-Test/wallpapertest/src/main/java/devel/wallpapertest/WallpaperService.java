@@ -1,6 +1,6 @@
 package devel.wallpapertest;
 
-import processing.app.PWallpaper;
+import processing.android.PWallpaper;
 import processing.core.PApplet;
 
 public class WallpaperService extends PWallpaper {

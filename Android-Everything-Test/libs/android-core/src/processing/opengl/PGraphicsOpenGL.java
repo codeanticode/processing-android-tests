@@ -24,7 +24,7 @@
 
 package processing.opengl;
 
-import processing.app.PContainer;
+import processing.android.AppComponent;
 import processing.core.*;
 
 import java.lang.ref.ReferenceQueue;
@@ -666,8 +666,8 @@ public class PGraphicsOpenGL extends PGraphics {
 
   @Override
   // Android only
-  public PSurface createSurface(PContainer container, SurfaceHolder holder) {  // ignore
-    return new PSurfaceGLES(this, container, holder);
+  public PSurface createSurface(AppComponent component, SurfaceHolder holder) {  // ignore
+    return new PSurfaceGLES(this, component, holder);
   }
 
 
@@ -678,25 +678,25 @@ public class PGraphicsOpenGL extends PGraphics {
   }
 
 
-  @Override
+//  @Override
   // Android only
-  public boolean canDraw() {
-    return pgl.canDraw();
-  }
+//  public boolean canDraw() {
+//    return pgl.canDraw();
+//  }
 
 
-  @Override
+//  @Override
   // Android only
-  public void requestDraw() {
-    if (primaryGraphics) {
-      if (initialized) {
-        if (sized) pgl.reinitSurface();
-        if (parent.canDraw()) pgl.requestDraw();
-      } else {
-        initPrimary();
-      }
-    }
-  }
+//  public void requestDraw() {
+//    if (primaryGraphics) {
+//      if (initialized) {
+//        if (sized) pgl.reinitSurface();
+//        if (parent.canDraw()) pgl.requestDraw();
+//      } else {
+//        initPrimary();
+//      }
+//    }
+//  }
 
 
   public boolean saveImpl(String filename) {
