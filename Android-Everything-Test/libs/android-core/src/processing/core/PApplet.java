@@ -484,6 +484,9 @@ public class PApplet extends Object implements PConstants {
       height = displayHeight;
     }
 
+    // Now we now the right width/height size for the renderer
+    g.setSize(width, height);
+
     //set smooth level
     if (smooth == 0) {
       g.noSmooth();
@@ -491,6 +494,7 @@ public class PApplet extends Object implements PConstants {
       g.smooth(smooth);
     }
 
+    // Finalize surface initialization.
     surface.initView(width, height);
 
     finished = false; // just for clarity
@@ -601,8 +605,13 @@ public class PApplet extends Object implements PConstants {
   // TODO this is only used by A2D, when finishing up a draw. but if the
   // surfaceview has changed, then it might belong to an a3d surfaceview. hrm.
   public SurfaceHolder getSurfaceHolder() {
-    return surface.getSurfaceView().getHolder();
-//    return surfaceHolder;
+    SurfaceView view = surface.getSurfaceView();
+    if (view == null) {
+      // Watch faces don't have a surface view associated to them.
+      return null;
+    } else {
+      return view.getHolder();
+    }
   }
 
 

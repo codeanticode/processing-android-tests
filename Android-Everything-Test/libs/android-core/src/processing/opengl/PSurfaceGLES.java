@@ -167,6 +167,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
       }
       setRootView(rootView);
     } else if (component.getKind() == AppComponent.WALLPAPER) {
+      /*
       int displayWidth = component.getWidth();
       int displayHeight = component.getHeight();
       View rootView;
@@ -195,6 +196,8 @@ public class PSurfaceGLES implements PSurface, PConstants {
         rootView = overallLayout;
       }
       setRootView(rootView);
+      */
+      setRootView(getSurfaceView());
     }
   }
 
@@ -279,7 +282,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
   private final Handler handler = new Handler();
   private final Runnable drawRunnable = new Runnable() {
     public void run() {
-      if (sketch != null) {
+      if (surface != null) {
         surface.requestRender();
       }
       scheduleNextDraw();
@@ -289,19 +292,14 @@ public class PSurfaceGLES implements PSurface, PConstants {
   private void scheduleNextDraw() {
     handler.removeCallbacks(drawRunnable);
     component.requestDraw();
-    int waitMillis = 1000 / 15;
+    int targetMillis = 1000 / 15;
     if (sketch != null) {
       final PSurfaceGLES glsurf = (PSurfaceGLES) sketch.surface;
       float targetfps = glsurf.pgl.getFrameRate();
-      float targetMillisPerFrame = 1000 / targetfps;
-
-//            float actualFps = sketch.frameRate;
-//            float actualMillisPerFrame = 1000 / actualFps;
-//            int waitMillis = (int)PApplet.max(0, targetMillisPerFrame - actualMillisPerFrame);
-      waitMillis = (int) targetMillisPerFrame;
+      targetMillis = (int)(1000 / targetfps);
     }
     if (component.canDraw()) {
-      handler.postDelayed(drawRunnable, waitMillis);
+      handler.postDelayed(drawRunnable, targetMillis);
     }
   }
 
@@ -317,25 +315,21 @@ public class PSurfaceGLES implements PSurface, PConstants {
 
 
   public void startThread() {
-    if (component.getKind() == AppComponent.WATCHFACE_GLES) return;
     requestNextDraw();
   }
 
 
   public void pauseThread() {
-    if (component.getKind() == AppComponent.WATCHFACE_GLES) return;
     pauseNextDraw();
   }
 
 
   public void resumeThread() {
-    if (component.getKind() == AppComponent.WATCHFACE_GLES) return;
     scheduleNextDraw();
   }
 
 
   public boolean stopThread() {
-    if (component.getKind() == AppComponent.WATCHFACE_GLES) return true;
     pauseNextDraw();
     return true;
   }
@@ -530,7 +524,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
       // lib.init(iwidth, iheight);
 
        // Display width/height might change if the orientation changes.
-      sketch.displayHeight = iwidth;
+      sketch.displayWidth = iwidth;
       sketch.displayHeight = iheight;
       graphics.setSize(sketch.sketchWidth(), sketch.sketchHeight());
       sketch.surfaceChanged();

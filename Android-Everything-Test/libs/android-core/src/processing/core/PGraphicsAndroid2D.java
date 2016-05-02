@@ -214,15 +214,18 @@ public class PGraphicsAndroid2D extends PGraphics {
 //    }
 
     if (primaryGraphics) {
-      Canvas screen = null;
-      try {
-        screen = parent.getSurfaceHolder().lockCanvas(null);
-        if (screen != null) {
-          screen.drawBitmap(bitmap, new Matrix(), null);
-        }
-      } finally {
-        if (screen != null) {
-          parent.getSurfaceHolder().unlockCanvasAndPost(screen);
+      SurfaceHolder holder = parent.getSurfaceHolder();
+      if (holder != null) {
+        Canvas screen = null;
+        try {
+          screen = holder.lockCanvas(null);
+          if (screen != null) {
+            screen.drawBitmap(bitmap, new Matrix(), null);
+          }
+        } finally {
+          if (screen != null) {
+            parent.getSurfaceHolder().unlockCanvasAndPost(screen);
+          }
         }
       }
     } else {
