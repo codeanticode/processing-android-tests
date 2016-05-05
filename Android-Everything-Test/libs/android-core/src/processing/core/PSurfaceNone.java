@@ -89,6 +89,15 @@ public class PSurfaceNone implements PSurface, PConstants {
   }
 
   @Override
+  public void dispose() {
+    sketch = null;
+    graphics = null;
+    component = null;
+    activity = null;
+    view = null;
+  }
+
+  @Override
   public void setRootView(View view) {
     this.view = view;
   }

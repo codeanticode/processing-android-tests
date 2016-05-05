@@ -76,6 +76,12 @@ public class PSurfaceGLES extends PSurfaceNone {
     glsurf = (GLSurfaceView)surface;
   }
 
+  @Override
+  public void dispose() {
+    super.dispose();
+    glsurf = null;
+  }
+
   ///////////////////////////////////////////////////////////
 
   // Thread handling

@@ -349,7 +349,7 @@ public class PApplet extends Object implements PConstants {
    * true if exit() has been called so that things shut down
    * once the main thread kicks off.
    */
-  public boolean exitCalled;
+  protected boolean exitCalled;
 
 //  Thread thread;
 
@@ -2888,6 +2888,7 @@ public class PApplet extends Object implements PConstants {
     if (surface.stopThread()) {
       if (g != null) {
         g.dispose();
+        surface.dispose();
       }
     }
 
