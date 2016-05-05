@@ -284,11 +284,11 @@ public class PSurfaceGLES implements PSurface, PConstants {
   }
 
 
-  public void dispose() {
-    if (surface != null && surface instanceof SketchSurfaceViewGL) {
-      ((SketchSurfaceViewGL) surface).onDestroy();
-    }
-  }
+//  public void dispose() {
+//    if (surface != null && surface instanceof SketchSurfaceViewGL) {
+//      ((SketchSurfaceViewGL) surface).onDestroy();
+//    }
+//  }
 
 
   ///////////////////////////////////////////////////////////
@@ -336,6 +336,7 @@ public class PSurfaceGLES implements PSurface, PConstants {
   }
 
 
+  /*
   public void startThread() {
     requestNextDraw();
   }
@@ -355,10 +356,152 @@ public class PSurfaceGLES implements PSurface, PConstants {
     pauseNextDraw();
     return true;
   }
+  */
+
+  protected Thread thread;
+  protected boolean paused;
+  protected Object pauseObject = new Object();
+
+  protected float frameRateTarget = 60;
+  protected long frameRatePeriod = 1000000000L / 60L;
+
+  public Thread createThread() {
+    return new AnimationThread();
+  }
+
+
+  public void startThread() {
+    if (thread == null) {
+      thread = createThread();
+      thread.start();
+    } else {
+      throw new IllegalStateException("Thread already started in " +
+                                      getClass().getSimpleName());
+    }
+  }
+
+
+  public void pauseThread() {
+    paused = true;
+  }
+
+
+  public void resumeThread() {
+    paused = false;
+    synchronized (pauseObject) {
+      pauseObject.notifyAll();  // wake up the animation thread
+    }
+  }
+
+
+  public boolean stopThread() {
+    if (thread == null) {
+      return false;
+    }
+    thread = null;
+    return true;
+  }
+
+  public void setFrameRate(float fps) {
+    frameRateTarget = fps;
+    frameRatePeriod = (long) (1000000000.0 / frameRateTarget);
+    //g.setFrameRate(fps);
+  }
+
+    protected void checkPause() {
+    if (paused) {
+      synchronized (pauseObject) {
+        try {
+          pauseObject.wait();
+//          PApplet.debug("out of wait");
+        } catch (InterruptedException e) {
+          // waiting for this interrupt on a start() (resume) call
+        }
+      }
+    }
+//    PApplet.debug("done with pause");
+  }
+
+
+  public class AnimationThread extends Thread {
+
+    public AnimationThread() {
+      super("Animation Thread");
+    }
+
+    // broken out so it can be overridden by Danger et al
+    public void callDraw() {
+//      sketch.handleDraw();
+      if (surface != null) {
+        surface.requestRender();
+      }
+    }
+
+    /**
+     * Main method for the primary animation thread.
+     * <A HREF="http://java.sun.com/products/jfc/tsc/articles/painting/">Painting in AWT and Swing</A>
+     */
+    @Override
+    public void run() {  // not good to make this synchronized, locks things up
+      long beforeTime = System.nanoTime();
+      long overSleepTime = 0L;
+
+      int noDelays = 0;
+      // Number of frames with a delay of 0 ms before the
+      // animation thread yields to other running threads.
+      final int NO_DELAYS_PER_YIELD = 15;
+
+      // un-pause the sketch and get rolling
+      sketch.start();
+
+      while ((Thread.currentThread() == thread) && !sketch.finished) {
+        checkPause();
+        callDraw();
+
+        // wait for update & paint to happen before drawing next frame
+        // this is necessary since the drawing is sometimes in a
+        // separate thread, meaning that the next frame will start
+        // before the update/paint is completed
+
+        long afterTime = System.nanoTime();
+        long timeDiff = afterTime - beforeTime;
+        //System.out.println("time diff is " + timeDiff);
+        long sleepTime = (frameRatePeriod - timeDiff) - overSleepTime;
+
+        if (sleepTime > 0) {  // some time left in this cycle
+          try {
+            Thread.sleep(sleepTime / 1000000L, (int) (sleepTime % 1000000L));
+            noDelays = 0;  // Got some sleep, not delaying anymore
+          } catch (InterruptedException ex) { }
+
+          overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
+
+        } else {    // sleepTime <= 0; the frame took longer than the period
+          overSleepTime = 0L;
+          noDelays++;
+
+          if (noDelays > NO_DELAYS_PER_YIELD) {
+            Thread.yield();   // give another thread a chance to run
+            noDelays = 0;
+          }
+        }
+
+        beforeTime = System.nanoTime();
+      }
+
+      sketch.dispose();  // call to shutdown libs?
+
+      // If the user called the exit() function, the window should close,
+      // rather than the sketch just halting.
+      if (sketch.exitCalled) {
+        sketch.exitActual();
+      }
+    }
+  }
 
 
   public boolean isStopped() {
-    return !handler.hasMessages(0);
+    return thread == null;
   }
 
   ///////////////////////////////////////////////////////////
@@ -412,11 +555,12 @@ public class PSurfaceGLES implements PSurface, PConstants {
       }
     }
 
-    public void onDestroy() {
-      super.onDetachedFromWindow();
+//    public void onDestroy() {
+//      super.destroyDrawingCache();
+//      super.onDetachedFromWindow();
       // don't think i want to call stop() from here, since it might be swapping renderers
       //      stop();
-    }
+//    }
 
 
     @Override

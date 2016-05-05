@@ -40,7 +40,7 @@ public interface PSurface {
   public Activity getActivity();
   public AppComponent getComponent();
 
-  public void dispose();
+//  public void dispose();
 
   public View getRootView();
 
@@ -75,4 +75,6 @@ public interface PSurface {
   public boolean stopThread();
 
   public boolean isStopped();
+
+  public void setFrameRate(float fps);
 }
