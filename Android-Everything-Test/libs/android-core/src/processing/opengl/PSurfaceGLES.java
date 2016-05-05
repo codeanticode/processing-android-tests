@@ -422,7 +422,6 @@ public class PSurfaceGLES implements PSurface, PConstants {
 //    PApplet.debug("done with pause");
   }
 
-
   public class AnimationThread extends Thread {
 
     public AnimationThread() {
@@ -430,9 +429,10 @@ public class PSurfaceGLES implements PSurface, PConstants {
     }
 
     // broken out so it can be overridden by Danger et al
-    public void callDraw() {
+    protected void callDraw() {
 //      sketch.handleDraw();
-      if (surface != null) {
+      component.requestDraw();
+      if (component.canDraw() && surface != null) {
         surface.requestRender();
       }
     }

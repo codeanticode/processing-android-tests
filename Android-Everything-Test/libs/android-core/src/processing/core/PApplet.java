@@ -1697,9 +1697,9 @@ public class PApplet extends Object implements PConstants {
       // we are sure that the frame is properly displayed.
       looping = false;
       requestedNoLoop = false;
-      insideDraw = false;
       // We are done, we only need to finish the frame and exit.
       g.endDraw();
+      insideDraw = false;
       return;
     }
 
