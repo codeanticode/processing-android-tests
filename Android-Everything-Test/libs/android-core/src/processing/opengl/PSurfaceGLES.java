@@ -22,23 +22,16 @@
 
 package processing.opengl;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.app.Activity;
+
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.ConfigurationInfo;
-import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.EGLConfigChooser;
 import android.opengl.GLSurfaceView.Renderer;
@@ -46,44 +39,23 @@ import android.service.wallpaper.WallpaperService;
 import android.support.wearable.watchface.Gles2WatchFaceService;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import processing.android.AppComponent;
 import processing.android.PFragment;
 import processing.core.PApplet;
-import processing.core.PConstants;
 import processing.core.PGraphics;
-import processing.core.PSurface;
-import android.os.Handler;
+import processing.core.PSurfaceNone;
 
-public class PSurfaceGLES implements PSurface, PConstants {
-  protected PApplet sketch;
-  protected PGraphics graphics;
-  protected AppComponent component;
-
-  protected Activity activity;
-  protected WallpaperService wallpaper;
-  protected Gles2WatchFaceService watchface;
-
-  protected View view;
-
-  protected GLSurfaceView surface;
-
+public class PSurfaceGLES extends PSurfaceNone {
   public PGLES pgl;
+  private GLSurfaceView glsurf;
 
   /** The renderer object driving the rendering loop, analogous to the
    * GLEventListener in JOGL */
   protected AndroidRenderer renderer;
   protected AndroidConfigChooser configChooser;
 
-
-  public PSurfaceGLES() {
-
-  }
-
+  public PSurfaceGLES() { }
 
   public PSurfaceGLES(PGraphics graphics, AppComponent component, SurfaceHolder holder) {
     this.sketch = graphics.parent;
@@ -101,407 +73,19 @@ public class PSurfaceGLES implements PSurface, PConstants {
       watchface = (Gles2WatchFaceService)component;
       surface = null;
     }
+    glsurf = (GLSurfaceView)surface;
   }
-
-  @Override
-  public AppComponent getComponent() {
-    return component;
-  }
-
-
-  @Override
-  public Activity getActivity() {
-    return activity;
-  }
-
-
-  @Override
-  public View getRootView() {
-    return view;
-  }
-
-
-  @Override
-  public void setRootView(View view) {
-    this.view = view;
-  }
-
-
-  @Override
-  public SurfaceView getSurfaceView() {
-    return surface;
-  }
-
-
-  public AssetManager getAssets() {
-    if (component.getKind() == AppComponent.FRAGMENT) {
-      return activity.getAssets();
-    } else if (component.getKind() == AppComponent.WALLPAPER) {
-      return wallpaper.getBaseContext().getAssets();
-    } else if (component.getKind() == AppComponent.WATCHFACE_GLES) {
-      return watchface.getBaseContext().getAssets();
-    }
-    return null;
-  }
-
-
-  public void startActivity(Intent intent) {
-    if (component.getKind() == AppComponent.FRAGMENT) {
-      component.startActivity(intent);
-    }
-  }
-
-
-  public void setSystemUiVisibility(int visibility) {
-    int kind = component.getKind();
-    if (kind == AppComponent.FRAGMENT || kind == AppComponent.WALLPAPER) {
-      surface.setSystemUiVisibility(visibility);
-    }
-  }
-
-
-  public void initView(int sketchWidth, int sketchHeight) {
-    if (component.getKind() == AppComponent.FRAGMENT) {
-      int displayWidth = component.getWidth();
-      int displayHeight = component.getHeight();
-      View rootView;
-      if (sketchWidth == displayWidth && sketchHeight == displayHeight) {
-        // If using the full screen, don't embed inside other layouts
-//        window.setContentView(surfaceView);
-        rootView = getSurfaceView();
-      } else {
-        // If not using full screen, setup awkward view-inside-a-view so that
-        // the sketch can be centered on screen. (If anyone has a more efficient
-        // way to do this, please file an issue on Google Code, otherwise you
-        // can keep your "talentless hack" comments to yourself. Ahem.)
-        RelativeLayout overallLayout = new RelativeLayout(activity);
-        RelativeLayout.LayoutParams lp =
-          new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                                          LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-        LinearLayout layout = new LinearLayout(activity);
-        layout.addView(getSurfaceView(), sketchWidth, sketchHeight);
-        overallLayout.addView(layout, lp);
-        overallLayout.setBackgroundColor(sketch.sketchWindowColor());
-//        window.setContentView(overallLayout);
-        rootView = overallLayout;
-      }
-      setRootView(rootView);
-    } else if (component.getKind() == AppComponent.WALLPAPER) {
-      /*
-      int displayWidth = component.getWidth();
-      int displayHeight = component.getHeight();
-      View rootView;
-      // Looks like a wallpaper can be larger than the screen res, and have an offset, need to
-      // look more into that.
-      if (sketchWidth == displayWidth && sketchHeight == displayHeight) {
-        // If using the full screen, don't embed inside other layouts
-//        window.setContentView(surfaceView);
-        rootView = getSurfaceView();
-      } else {
-        // If not using full screen, setup awkward view-inside-a-view so that
-        // the sketch can be centered on screen. (If anyone has a more efficient
-        // way to do this, please file an issue on Google Code, otherwise you
-        // can keep your "talentless hack" comments to yourself. Ahem.)
-        RelativeLayout overallLayout = new RelativeLayout(wallpaper);
-        RelativeLayout.LayoutParams lp =
-          new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                                          LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-        LinearLayout layout = new LinearLayout(wallpaper);
-        layout.addView(getSurfaceView(), sketchWidth, sketchHeight);
-        overallLayout.addView(layout, lp);
-        overallLayout.setBackgroundColor(sketch.sketchWindowColor());
-//        window.setContentView(overallLayout);
-        rootView = overallLayout;
-      }
-      setRootView(rootView);
-      */
-      setRootView(getSurfaceView());
-    }
-  }
-
-
-  public String getName() {
-    if (component.getKind() == AppComponent.FRAGMENT) {
-      return activity.getComponentName().getPackageName();
-    } else if (component.getKind() == AppComponent.WALLPAPER) {
-      return wallpaper.getPackageName();
-    } else if (component.getKind() == AppComponent.WATCHFACE_GLES) {
-      return watchface.getPackageName();
-    }
-    return "";
-  }
-
-
-  public void setOrientation(int which) {
-    if (component.getKind() == AppComponent.FRAGMENT) {
-      if (which == PORTRAIT) {
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-      } else if (which == LANDSCAPE) {
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-      }
-    }
-  }
-
-
-  public File getFilesDir() {
-    if (component.getKind() == AppComponent.FRAGMENT) {
-      return activity.getFilesDir();
-    } else if (component.getKind() == AppComponent.WALLPAPER) {
-      return wallpaper.getFilesDir();
-    } else if (component.getKind() == AppComponent.WATCHFACE_GLES) {
-      return watchface.getFilesDir();
-    }
-    return null;
-  }
-
-
-  public InputStream openFileInput(String filename) {
-    if (component.getKind() == AppComponent.FRAGMENT) {
-      try {
-        return activity.openFileInput(filename);
-      } catch (FileNotFoundException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-    }
-    return null;
-  }
-
-
-  public File getFileStreamPath(String path) {
-    if (component.getKind() == AppComponent.FRAGMENT) {
-      return activity.getFileStreamPath(path);
-    } else if (component.getKind() == AppComponent.WALLPAPER) {
-      return wallpaper.getFileStreamPath(path);
-    } else if (component.getKind() == AppComponent.WATCHFACE_GLES) {
-      return watchface.getFileStreamPath(path);
-    }
-    return null;
-  }
-
-
-//  public void dispose() {
-//    if (surface != null && surface instanceof SketchSurfaceViewGL) {
-//      ((SketchSurfaceViewGL) surface).onDestroy();
-//    }
-//  }
-
 
   ///////////////////////////////////////////////////////////
 
   // Thread handling
-  // http://stackoverflow.com/questions/6964011/handler-vs-asynctask-vs-thread
-  // http://stackoverflow.com/questions/3102203/handler-vs-thread
 
-  // Some notes on how to control FPS:
-  // http://stackoverflow.com/questions/4772693/how-to-limit-framerate-when-using-androids-glsurfaceview-rendermode-continuousl
-  // https://github.com/LWJGL/lwjgl/blob/master/src/java/org/lwjgl/opengl/Sync.java
-
-  private final Handler handler = new Handler();
-  private final Runnable drawRunnable = new Runnable() {
-    public void run() {
-      if (surface != null) {
-        surface.requestRender();
-      }
-      scheduleNextDraw();
-    }
-  };
-
-  private void scheduleNextDraw() {
-    handler.removeCallbacks(drawRunnable);
+  @Override
+  protected void callDraw() {
     component.requestDraw();
-    int targetMillis = 1000 / 15;
-    if (sketch != null) {
-      final PSurfaceGLES glsurf = (PSurfaceGLES) sketch.surface;
-      float targetfps = glsurf.pgl.getFrameRate();
-      targetMillis = (int)(1000 / targetfps);
+    if (component.canDraw() && glsurf != null) {
+      glsurf.requestRender();
     }
-    if (component.canDraw()) {
-      handler.postDelayed(drawRunnable, targetMillis);
-    }
-  }
-
-
-  private void pauseNextDraw() {
-    handler.removeCallbacks(drawRunnable);
-  }
-
-
-  private void requestNextDraw() {
-    handler.post(drawRunnable);
-  }
-
-
-  /*
-  public void startThread() {
-    requestNextDraw();
-  }
-
-
-  public void pauseThread() {
-    pauseNextDraw();
-  }
-
-
-  public void resumeThread() {
-    scheduleNextDraw();
-  }
-
-
-  public boolean stopThread() {
-    pauseNextDraw();
-    return true;
-  }
-  */
-
-  protected Thread thread;
-  protected boolean paused;
-  protected Object pauseObject = new Object();
-
-  protected float frameRateTarget = 60;
-  protected long frameRatePeriod = 1000000000L / 60L;
-
-  public Thread createThread() {
-    return new AnimationThread();
-  }
-
-
-  public void startThread() {
-    if (thread == null) {
-      thread = createThread();
-      thread.start();
-    } else {
-      throw new IllegalStateException("Thread already started in " +
-                                      getClass().getSimpleName());
-    }
-  }
-
-
-  public void pauseThread() {
-    paused = true;
-  }
-
-
-  public void resumeThread() {
-    paused = false;
-    synchronized (pauseObject) {
-      pauseObject.notifyAll();  // wake up the animation thread
-    }
-  }
-
-
-  public boolean stopThread() {
-    if (thread == null) {
-      return false;
-    }
-    thread = null;
-    return true;
-  }
-
-  public void setFrameRate(float fps) {
-    frameRateTarget = fps;
-    frameRatePeriod = (long) (1000000000.0 / frameRateTarget);
-    //g.setFrameRate(fps);
-  }
-
-    protected void checkPause() {
-    if (paused) {
-      synchronized (pauseObject) {
-        try {
-          pauseObject.wait();
-//          PApplet.debug("out of wait");
-        } catch (InterruptedException e) {
-          // waiting for this interrupt on a start() (resume) call
-        }
-      }
-    }
-//    PApplet.debug("done with pause");
-  }
-
-  public class AnimationThread extends Thread {
-
-    public AnimationThread() {
-      super("Animation Thread");
-    }
-
-    // broken out so it can be overridden by Danger et al
-    protected void callDraw() {
-//      sketch.handleDraw();
-      component.requestDraw();
-      if (component.canDraw() && surface != null) {
-        surface.requestRender();
-      }
-    }
-
-    /**
-     * Main method for the primary animation thread.
-     * <A HREF="http://java.sun.com/products/jfc/tsc/articles/painting/">Painting in AWT and Swing</A>
-     */
-    @Override
-    public void run() {  // not good to make this synchronized, locks things up
-      long beforeTime = System.nanoTime();
-      long overSleepTime = 0L;
-
-      int noDelays = 0;
-      // Number of frames with a delay of 0 ms before the
-      // animation thread yields to other running threads.
-      final int NO_DELAYS_PER_YIELD = 15;
-
-      // un-pause the sketch and get rolling
-      sketch.start();
-
-      while ((Thread.currentThread() == thread) && !sketch.finished) {
-        checkPause();
-        callDraw();
-
-        // wait for update & paint to happen before drawing next frame
-        // this is necessary since the drawing is sometimes in a
-        // separate thread, meaning that the next frame will start
-        // before the update/paint is completed
-
-        long afterTime = System.nanoTime();
-        long timeDiff = afterTime - beforeTime;
-        //System.out.println("time diff is " + timeDiff);
-        long sleepTime = (frameRatePeriod - timeDiff) - overSleepTime;
-
-        if (sleepTime > 0) {  // some time left in this cycle
-          try {
-            Thread.sleep(sleepTime / 1000000L, (int) (sleepTime % 1000000L));
-            noDelays = 0;  // Got some sleep, not delaying anymore
-          } catch (InterruptedException ex) { }
-
-          overSleepTime = (System.nanoTime() - afterTime) - sleepTime;
-
-        } else {    // sleepTime <= 0; the frame took longer than the period
-          overSleepTime = 0L;
-          noDelays++;
-
-          if (noDelays > NO_DELAYS_PER_YIELD) {
-            Thread.yield();   // give another thread a chance to run
-            noDelays = 0;
-          }
-        }
-
-        beforeTime = System.nanoTime();
-      }
-
-      sketch.dispose();  // call to shutdown libs?
-
-      // If the user called the exit() function, the window should close,
-      // rather than the sketch just halting.
-      if (sketch.exitCalled) {
-        sketch.exitActual();
-      }
-    }
-  }
-
-
-  public boolean isStopped() {
-    return thread == null;
   }
 
   ///////////////////////////////////////////////////////////

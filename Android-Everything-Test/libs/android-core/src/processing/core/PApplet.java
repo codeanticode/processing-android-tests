@@ -544,25 +544,17 @@ public class PApplet extends Object implements PConstants {
   public void onPause() {
     // TODO need to save all application state here!
 //    System.out.println("PApplet.onPause() called");
-//    paused = true;
     handleMethods("pause");
     surface.pauseThread();
     pause();  // handler for others to write
-//  synchronized (this) {
-//  paused = true;
-//}
-//    surfaceView.onPause();
   }
 
 
   public void onDestroy() {
-//    stop();
-//    surface.stopThread();
     dispose();
     if (PApplet.DEBUG) {
       System.out.println("PApplet.onDestroy() called");
     }
-    //finish();
   }
 
 
@@ -751,15 +743,8 @@ public class PApplet extends Object implements PConstants {
    * PAppletGL needs to have a usable screen before getting things rolling.
    */
   public void start() {
-//    finished = false;
-//    paused = false; // unpause the thread
-
     resume();
     surface.resumeThread();
-//    if (thread == null) {
-//      thread = new Thread(this, "Animation Thread");
-//      thread.start();
-//    }
   }
 
 
@@ -774,10 +759,8 @@ public class PApplet extends Object implements PConstants {
   public void stop() {
     // this used to shut down the sketch, but that code has
     // been moved to dispose()
-
-//    paused = true; // sleep the animation thread
     pause();
-    surface.stopThread();
+    surface.pauseThread();
 
     //TODO listeners
   }
