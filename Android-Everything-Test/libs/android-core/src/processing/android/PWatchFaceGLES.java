@@ -24,6 +24,7 @@ package processing.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.WindowInsets;
 import android.support.wearable.watchface.Gles2WatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
@@ -138,6 +139,16 @@ public class PWatchFaceGLES extends Gles2WatchFaceService implements AppComponen
       super.onPropertiesChanged(properties);
       sketch.lowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
       sketch.burnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+    }
+
+    @Override
+    public void onApplyWindowInsets(WindowInsets insets) {
+      super.onApplyWindowInsets(insets);
+      sketch.isRound = insets.isRound();
+      sketch.insetLeft = insets.getSystemWindowInsetLeft();
+      sketch.insetRight = insets.getSystemWindowInsetRight();
+      sketch.insetTop = insets.getSystemWindowInsetTop();
+      sketch.insetBottom = insets.getSystemWindowInsetBottom();
     }
 
     @Override

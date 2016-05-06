@@ -32,6 +32,7 @@ import android.support.wearable.watchface.WatchFaceStyle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import processing.core.PApplet;
 import processing.core.PGraphicsAndroid2D;
@@ -122,6 +123,16 @@ public class PWatchFaceCanvas extends CanvasWatchFaceService implements AppCompo
       super.onPropertiesChanged(properties);
       sketch.lowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
       sketch.burnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+    }
+
+    @Override
+    public void onApplyWindowInsets(WindowInsets insets) {
+      super.onApplyWindowInsets(insets);
+      sketch.isRound = insets.isRound();
+      sketch.insetLeft = insets.getSystemWindowInsetLeft();
+      sketch.insetRight = insets.getSystemWindowInsetRight();
+      sketch.insetTop = insets.getSystemWindowInsetTop();
+      sketch.insetBottom = insets.getSystemWindowInsetBottom();
     }
 
     @Override

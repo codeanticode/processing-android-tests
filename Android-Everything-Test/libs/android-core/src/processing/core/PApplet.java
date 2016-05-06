@@ -278,6 +278,17 @@ public class PApplet extends Object implements PConstants {
   public boolean ambientMode = false;
 
   /**
+   * Indicates whether the watch face is round or not.
+   */
+  public boolean isRound = false;
+
+  /**
+   * Watch face insets
+   */
+  public int insetLeft, insetRight = 0;
+  public int insetTop, insetBottom = 0;
+
+  /**
    * Use in watch faces to store information abou the device screen
    * https://developer.android.com/training/wearables/watch-faces/drawing.html#Screen
    */
