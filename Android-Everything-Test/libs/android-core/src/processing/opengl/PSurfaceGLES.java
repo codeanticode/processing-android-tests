@@ -69,7 +69,7 @@ public class PSurfaceGLES extends PSurfaceNone {
     } else if (component.getKind() == AppComponent.WALLPAPER) {
       wallpaper = (WallpaperService)component;
       surface = new SketchSurfaceViewGL(wallpaper, holder);
-    } else if (component.getKind() == AppComponent.WATCHFACE_GLES) {
+    } else if (component.getKind() == AppComponent.WATCHFACE) {
       watchface = (Gles2WatchFaceService)component;
       surface = null;
     }

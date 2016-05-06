@@ -47,7 +47,7 @@ public class PSurfaceAndroid2D extends PSurfaceNone {
     } else if (component.getKind() == AppComponent.WALLPAPER) {
       wallpaper = (WallpaperService)component;
       surface = new SketchSurfaceView(wallpaper, holder);
-    } else if (component.getKind() == AppComponent.WATCHFACE_CANVAS) {
+    } else if (component.getKind() == AppComponent.WATCHFACE) {
       watchface = (CanvasWatchFaceService)component;
       surface = null;
     }

@@ -82,7 +82,7 @@ public class PSurfaceNone implements PSurface, PConstants {
       return activity.getComponentName().getPackageName();
     } else if (component.getKind() == AppComponent.WALLPAPER) {
       return wallpaper.getPackageName();
-    } else if (component.getKind() == AppComponent.WATCHFACE_GLES) {
+    } else if (component.getKind() == AppComponent.WATCHFACE) {
       return watchface.getPackageName();
     }
     return "";
@@ -158,7 +158,7 @@ public class PSurfaceNone implements PSurface, PConstants {
       return activity.getFilesDir();
     } else if (component.getKind() == AppComponent.WALLPAPER) {
       return wallpaper.getFilesDir();
-    } else if (component.getKind() == AppComponent.WATCHFACE_GLES) {
+    } else if (component.getKind() == AppComponent.WATCHFACE) {
       return watchface.getFilesDir();
     }
     return null;
@@ -170,7 +170,7 @@ public class PSurfaceNone implements PSurface, PConstants {
       return activity.getFileStreamPath(path);
     } else if (component.getKind() == AppComponent.WALLPAPER) {
       return wallpaper.getFileStreamPath(path);
-    } else if (component.getKind() == AppComponent.WATCHFACE_GLES) {
+    } else if (component.getKind() == AppComponent.WATCHFACE) {
       return watchface.getFileStreamPath(path);
     }
     return null;
@@ -195,7 +195,7 @@ public class PSurfaceNone implements PSurface, PConstants {
       return activity.getAssets();
     } else if (component.getKind() == AppComponent.WALLPAPER) {
       return wallpaper.getBaseContext().getAssets();
-    } else if (component.getKind() == AppComponent.WATCHFACE_GLES) {
+    } else if (component.getKind() == AppComponent.WATCHFACE) {
       return watchface.getBaseContext().getAssets();
     }
     return null;
@@ -303,6 +303,8 @@ public class PSurfaceNone implements PSurface, PConstants {
       // animation thread yields to other running threads.
       final int NO_DELAYS_PER_YIELD = 15;
 
+      if (sketch == null) return;
+
       // un-pause the sketch and get rolling
       sketch.start();
 
@@ -341,12 +343,13 @@ public class PSurfaceNone implements PSurface, PConstants {
         beforeTime = System.nanoTime();
       }
 
-      sketch.dispose();  // call to shutdown libs?
-
-      // If the user called the exit() function, the window should close,
-      // rather than the sketch just halting.
-      if (sketch.exitCalled) {
-        sketch.exitActual();
+      if (sketch != null) {
+        sketch.dispose();  // call to shutdown libs?
+        // If the user called the exit() function, the window should close,
+        // rather than the sketch just halting.
+        if (sketch.exitCalled) {
+          sketch.exitActual();
+        }
       }
     }
   }

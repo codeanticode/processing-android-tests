@@ -24,6 +24,7 @@ package processing.android;
 
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.os.Bundle;
 import android.graphics.Rect;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
@@ -57,7 +58,7 @@ public class PWatchFaceCanvas extends CanvasWatchFaceService implements AppCompo
   }
 
   public int getKind() {
-    return WATCHFACE_CANVAS;
+    return WATCHFACE;
   }
 
   @Override
@@ -79,9 +80,10 @@ public class PWatchFaceCanvas extends CanvasWatchFaceService implements AppCompo
   }
 
   public boolean canDraw() {
-    return engine.isVisible() && !engine.isInAmbientMode();
+    // The rendering loop should never call handleDraw() directly, it only needs to invalidate the
+    // screen
+    return false;
   }
-
 
   private class CEngine extends CanvasWatchFaceService.Engine {
     @Override
@@ -111,9 +113,16 @@ public class PWatchFaceCanvas extends CanvasWatchFaceService implements AppCompo
     public void onAmbientModeChanged(boolean inAmbientMode) {
       super.onAmbientModeChanged(inAmbientMode);
       invalidateIfNecessary();
+      sketch.ambientMode = inAmbientMode;
       // call new event handlers in sketch (?)
     }
 
+    @Override
+    public void onPropertiesChanged(Bundle properties) {
+      super.onPropertiesChanged(properties);
+      sketch.lowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
+      sketch.burnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+    }
 
     @Override
     public void onVisibilityChanged(boolean visible) {

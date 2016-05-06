@@ -115,7 +115,7 @@ public class PFragment extends Fragment implements AppComponent {
 
 
   public void onBackPressed() {
-    sketch.onBackPressed();
+    sketch.exit();
   }
 
 

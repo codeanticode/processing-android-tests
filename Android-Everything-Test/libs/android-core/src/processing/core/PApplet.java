@@ -272,8 +272,20 @@ public class PApplet extends Object implements PConstants {
    */
   public boolean focused = false;
 
-  protected boolean windowFocused = false;
-  protected boolean viewFocused = false;
+  /**
+   * Use in watch faces to check if the device in in ambient mode or interactive mode.
+   */
+  public boolean ambientMode = false;
+
+  /**
+   * Use in watch faces to store information abou the device screen
+   * https://developer.android.com/training/wearables/watch-faces/drawing.html#Screen
+   */
+  public boolean lowBitAmbient = false;
+  public boolean burnInProtection = false;
+
+//  protected boolean windowFocused = false;
+//  protected boolean viewFocused = false;
 
   /**
    * true if the applet is online.
@@ -529,21 +541,16 @@ public class PApplet extends Object implements PConstants {
 
   public void onResume() {
     // TODO need to bring back app state here!
-//    surfaceView.onResume();
     if (DEBUG) System.out.println("PApplet.onResume() called");
     setFullScreenVisibility();
-//    paused = false;
     handleMethods("resume");
-    //start();  // kick the thread back on
     surface.resumeThread();
     resume();
-//    surfaceView.onResume();
   }
 
 
   public void onPause() {
     // TODO need to save all application state here!
-//    System.out.println("PApplet.onPause() called");
     handleMethods("pause");
     surface.pauseThread();
     pause();  // handler for others to write
@@ -560,18 +567,12 @@ public class PApplet extends Object implements PConstants {
 
   public void onStart() {
     start();
-//    tellPDE("onStart");
   }
 
 
   public void onStop() {
     stop();
-//    tellPDE("onStop");
   }
-
-//  private void tellPDE(final String message) {
-//    Log.i(surface.getName(), "PROCESSING " + message);
-//  }
 
 
   /**
@@ -1647,22 +1648,8 @@ public class PApplet extends Object implements PConstants {
       surfaceReady = true;
     }
 
-    // canDraw = g != null && (looping || redraw);
     if (g == null) return;
     if (!looping && !redraw) return;
-//    System.out.println("looping/redraw = " + looping + " " + redraw);
-
-    // no longer in use by any of our renderers
-//    if (!g.canDraw()) {
-//      debug("g.canDraw() is false");
-//      // Don't draw if the renderer is not yet ready.
-//      // (e.g. OpenGL has to wait for a peer to be on screen)
-//      return;
-//    }
-
-    // Store the quality setting in case it's changed during draw and the
-    // drawing context needs to be re-built before the next frame.
-//    int pquality = g.smooth;
 
     if (insideDraw) {
       System.err.println("handleDraw() called before finishing");
@@ -1689,19 +1676,7 @@ public class PApplet extends Object implements PConstants {
     long now = System.nanoTime();
 
     if (frameCount == 0) {
-        // 3.0a5 should be no longer needed; handled by PSurface
-        //surface.checkDisplaySize();
-
-//        try {
-        //println("Calling setup()");
       setup();
-        //println("Done with setup()");
-
-//        } catch (RendererChangeException e) {
-//          // Give up, instead set the new renderer and re-attempt setup()
-//          return;
-//        }
-//      defaultSize = false;
 
     } else {  // frameCount > 0, meaning an actual draw()
       // update the current frameRate
@@ -1718,9 +1693,7 @@ public class PApplet extends Object implements PConstants {
       pmouseX = dmouseX;
       pmouseY = dmouseY;
 
-        //println("Calling draw()");
       draw();
-        //println("Done calling draw()");
 
       // dmouseX/Y is updated only once per frame (unlike emouseX/Y)
       dmouseX = mouseX;
@@ -1738,10 +1711,6 @@ public class PApplet extends Object implements PConstants {
       // (only do this once draw() has run, not just setup())
     }
     g.endDraw();
-
-//    if (pquality != g.smooth) {
-//      surface.setSmooth(g.smooth);
-//    }
 
 //    if (recorder != null) {
 //      recorder.endDraw();
@@ -2513,11 +2482,6 @@ public class PApplet extends Object implements PConstants {
   }
 
 
-  public void onBackPressed() {
-	  exit();
-  }
-
-
   protected void nativeKeyEvent(android.view.KeyEvent event) {
     // event.isPrintingKey() returns false for whitespace and others,
     // which is a problem if the space bar or tab key are used.
@@ -2885,7 +2849,7 @@ public class PApplet extends Object implements PConstants {
 
     // call to shut down renderer, in case it needs it (pdf does)
 //    if (surface != null) surface.dispose();
-    if (surface.stopThread()) {
+    if (surface != null && surface.stopThread()) {
       if (g != null) {
         g.dispose();
         surface.dispose();
