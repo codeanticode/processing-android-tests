@@ -30,12 +30,10 @@ public class PCardboard extends CardboardActivity implements AppComponent {
   }
 
   public PCardboard(PApplet sketch) {
-    System.err.println("-----> PCardboard CONSTRUCTOR: " + sketch);
     this.sketch = sketch;
   }
 
   public void initDimensions() {
-//    metrics = new DisplayMetrics();
     metrics = getResources().getDisplayMetrics();
   }
 
@@ -65,7 +63,7 @@ public class PCardboard extends CardboardActivity implements AppComponent {
 
       // Don't start Papplet's animation thread bc cardboard will drive rendering
       // continuously
-      sketch.start();
+      sketch.startSurface();
     }
   }
 

@@ -1,7 +1,6 @@
 package processing.cardboard;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -22,11 +21,6 @@ import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import processing.android.AppComponent;
 import processing.core.PApplet;
 import processing.core.PGraphics;
@@ -44,8 +38,8 @@ public class PSurfaceCardboard extends PSurfaceGLES {
   protected PGraphicsCardboard pgc;
   
   protected CardboardActivity cardboard;
-  protected static AndroidCardboardRenderer cardboardRenderer;
-  protected static AndroidCardboardStereoRenderer cardboardStereoRenderer;
+//  protected AndroidCardboardRenderer cardboardRenderer;
+  protected AndroidCardboardStereoRenderer cardboardStereoRenderer;
 
   public PSurfaceCardboard(PGraphics graphics, AppComponent component, SurfaceHolder holder) {
     this.sketch = graphics.parent;
@@ -80,35 +74,6 @@ public class PSurfaceCardboard extends PSurfaceGLES {
   }
 
   public void initView(int sketchWidth, int sketchHeight) {
-/*
-      int displayWidth = container.getWidth();
-      int displayHeight = container.getHeight();
-      View rootView;
-      if (sketchWidth == displayWidth && sketchHeight == displayHeight) {
-        // If using the full screen, don't embed inside other layouts
-//        window.setContentView(surfaceView);
-        rootView = getSurfaceView();
-      } else {
-        // If not using full screen, setup awkward view-inside-a-view so that
-        // the sketch can be centered on screen. (If anyone has a more efficient
-        // way to do this, please file an issue on Google Code, otherwise you
-        // can keep your "talentless hack" comments to yourself. Ahem.)
-        RelativeLayout overallLayout = new RelativeLayout(activity);
-        RelativeLayout.LayoutParams lp =
-          new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                                          LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-        LinearLayout layout = new LinearLayout(activity);
-        layout.addView(getSurfaceView(), sketchWidth, sketchHeight);
-        overallLayout.addView(layout, lp);
-//        window.setContentView(overallLayout);
-        rootView = overallLayout;
-      }
-      setRootView(rootView);
-      */
-
-
     Window window = cardboard.getWindow();
 
     // Take up as much area as possible
@@ -270,10 +235,10 @@ public class PSurfaceCardboard extends PSurfaceGLES {
 
   // Android specific classes (Renderer, ConfigChooser)  
 
-  public AndroidCardboardRenderer getCardboardRenderer() {
-    cardboardRenderer = new AndroidCardboardRenderer();
-    return cardboardRenderer;
-  }
+//  public AndroidCardboardRenderer getCardboardRenderer() {
+//    cardboardRenderer = new AndroidCardboardRenderer();
+//    return cardboardRenderer;
+//  }
 
   public AndroidCardboardStereoRenderer getCardboardStereoRenderer() {
     cardboardStereoRenderer = new AndroidCardboardStereoRenderer();
@@ -362,6 +327,4 @@ public class PSurfaceCardboard extends PSurfaceGLES {
       
     }
   }
-  
-  
 }
