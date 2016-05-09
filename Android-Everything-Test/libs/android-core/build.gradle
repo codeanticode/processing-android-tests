@@ -26,5 +26,5 @@ android {
 }
 
 dependencies {
-    compile 'com.google.android.support:wearable:1.3.0'
+    compile files('libs/wearable-1.3.0-classes.jar')
 }

@@ -4,7 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Android-Everything-Test.iml" filepath="$PROJECT_DIR$/Android-Everything-Test.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/android-core/android-core.iml" filepath="$PROJECT_DIR$/libs/android-core/android-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/cardboard-java/cardboard-java.iml" filepath="$PROJECT_DIR$/libs/cardboard-java/cardboard-java.iml" />
       <module fileurl="file://$PROJECT_DIR$/cardboardtest/cardboardtest.iml" filepath="$PROJECT_DIR$/cardboardtest/cardboardtest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/cardboard-java/common/common.iml" filepath="$PROJECT_DIR$/libs/cardboard-java/common/common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libs/cardboard-java/core/core.iml" filepath="$PROJECT_DIR$/libs/cardboard-java/core/core.iml" />
       <module fileurl="file://$PROJECT_DIR$/fragmenttest/fragmenttest.iml" filepath="$PROJECT_DIR$/fragmenttest/fragmenttest.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/processing-cardboard/processing-cardboard.iml" filepath="$PROJECT_DIR$/libs/processing-cardboard/processing-cardboard.iml" />

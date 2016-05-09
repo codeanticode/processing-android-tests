@@ -41,6 +41,6 @@ android {
 dependencies {
     //    compile files('libs/cardboard.jar')
     compile project(':libs:android-core')
-    // Local binary dependency
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':libs:cardboard-java:common')
+    compile project(':libs:cardboard-java:core')
 }

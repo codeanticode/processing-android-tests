@@ -30,6 +30,7 @@ import processing.opengl.PSurfaceGLES;
 import android.view.Window;
 import android.view.WindowManager;
 import android.util.Log;
+import android.view.SurfaceView;
 
 public class PSurfaceCardboard extends PSurfaceGLES {
   private static final String TAG = "PSurfaceCardboard";
@@ -53,11 +54,11 @@ public class PSurfaceCardboard extends PSurfaceGLES {
     glview = new GLCardboardSurfaceView(cardboard);
     glview.setRestoreGLStateEnabled(false);
     glview.setDistortionCorrectionEnabled(false);
-    //v.setDistortionCorrectionEnabled(true);
-    glview.setChromaticAberrationCorrectionEnabled(false);
+//    glview.setDistortionCorrectionEnabled(true);
+//    glview.setChromaticAberrationCorrectionEnabled(false);
     cardboard.setCardboardView(glview);
 
-    surface = glview;
+    surface = null;
   }
   
   @Override
@@ -87,7 +88,7 @@ public class PSurfaceCardboard extends PSurfaceGLES {
     window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-    window.setContentView(surface);
+    window.setContentView(glview);
   }
 
   public String getName() {
@@ -154,7 +155,7 @@ public class PSurfaceCardboard extends PSurfaceGLES {
 
   public class GLCardboardSurfaceView extends CardboardView {
 //    PGraphicsOpenGL g3;
-    SurfaceHolder surfaceHolder;
+//    SurfaceHolder surfaceHolder;
 
     public GLCardboardSurfaceView(Context context) {
       super(context);
@@ -168,14 +169,14 @@ public class PSurfaceCardboard extends PSurfaceGLES {
         throw new RuntimeException("OpenGL ES 2.0 is not supported by this device.");
       }
 
-      surfaceHolder = getHolder();
-      // are these two needed?
-      surfaceHolder.addCallback(this);
-      surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
+//      surfaceHolder = getHolder();
+//      // are these two needed?
+//      surfaceHolder.addCallback(this);
+//      surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
 
       // Tells the default EGLContextFactory and EGLConfigChooser to create an GLES2 context.
-      setEGLContextClientVersion(2);
-      setPreserveEGLContextOnPause(true);
+//      setEGLContextClientVersion(2);
+//      setPreserveEGLContextOnPause(true);
 
       setFocusable(true);
       setFocusableInTouchMode(true);
@@ -183,17 +184,18 @@ public class PSurfaceCardboard extends PSurfaceGLES {
 
       int quality = sketch.sketchQuality();
       if (1 < quality) {
-        setEGLConfigChooser(getConfigChooser(quality));
+        setEGLConfigChooser(8, 8, 8, 8, 16, 1);
       }
       // The renderer can be set only once.
 //      setRenderer(surf.getCardboardRenderer());
       setRenderer(getCardboardStereoRenderer());
 //
       // Cardboard needs to run with its own loop.
-      setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+//      setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
 //      setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
+    /*
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
       super.surfaceChanged(holder, format, w, h);
@@ -210,6 +212,7 @@ public class PSurfaceCardboard extends PSurfaceGLES {
       // will trigger onSurfaceChanged in the renderer, which calls setSize().
       // -- apparently not true? (100110)
     }
+*/
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

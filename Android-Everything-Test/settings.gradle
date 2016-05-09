@@ -1,1 +1,2 @@
-include ':wallpapertest', ':wear', ':libs:android-core', ':libs:processing-cardboard', ':cardboardtest', ':fragmenttest'
+include ':wallpapertest', ':wear', ':libs:android-core', ':libs:processing-cardboard', ':cardboardtest', ':fragmenttest',
+        ':libs:cardboard-java:core', ':libs:cardboard-java:common'
