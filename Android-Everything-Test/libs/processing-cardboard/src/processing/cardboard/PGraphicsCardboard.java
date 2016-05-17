@@ -5,7 +5,6 @@ import com.google.vrtoolkit.cardboard.HeadTransform;
 import com.google.vrtoolkit.cardboard.Viewport;
 
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import processing.android.AppComponent;
 import processing.core.PMatrix3D;
 import processing.core.PSurface;
@@ -14,8 +13,7 @@ import processing.opengl.PGLES;
 import processing.opengl.PGraphics3D;
 import processing.opengl.PGraphicsOpenGL;
 
-public class PGraphicsCardboard extends PGraphics3D {
-  public static final String RENDERER = "processing.cardboard.PGraphicsCardboard";
+public class PGraphicsCardboard extends PGraphics3D {  
   protected static final int LEFT_EYE  = 0;
   protected static final int RIGHT_EYE = 1;
   

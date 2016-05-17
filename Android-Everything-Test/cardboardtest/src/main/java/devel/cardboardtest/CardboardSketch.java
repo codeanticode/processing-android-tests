@@ -5,7 +5,7 @@ import processing.cardboard.*;
 
 public class CardboardSketch extends PApplet {
     public void settings() {
-        fullScreen(PGraphicsCardboard.RENDERER);
+        fullScreen(PCardboard.STEREO);
     }
 
     public void setup() {
@@ -13,11 +13,12 @@ public class CardboardSketch extends PApplet {
     }
 
     public void draw() {
-      background(150, 0, 0);
+      background(157);
+      lights();
 //        translate(width / 2, height / 2);
 //        rotateX(frameCount * 0.01f);
 //        rotateY(frameCount * 0.01f);
-        box(500);
+        box(250);
 //        println(frameCount);
     }
 }
