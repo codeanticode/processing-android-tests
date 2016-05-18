@@ -5,7 +5,8 @@ import processing.cardboard.*;
 
 public class CardboardSketch extends PApplet {
     public void settings() {
-      fullScreen(PCardboard.STEREO);
+//      fullScreen(PCardboard.STEREO);
+      fullScreen(PCardboard.MONO);
     }
 
     public void setup() {
@@ -18,6 +19,8 @@ public class CardboardSketch extends PApplet {
         background(200, 50, 50);
       } else if (pgc.eyeType == PCardboard.RIGHT) {
         background(50, 50, 200);
+      } else if (pgc.eyeType == PCardboard.MONOCULAR) {
+        background(50, 200, 50);
       }
 
 //      background(157);
