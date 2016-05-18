@@ -1,6 +1,8 @@
 package processing.cardboard;
 
 import com.google.vrtoolkit.cardboard.CardboardActivity;
+import com.google.vrtoolkit.cardboard.Eye;
+
 import android.content.Intent;
 import android.util.DisplayMetrics;
 import processing.android.AppComponent;
@@ -9,7 +11,11 @@ import processing.core.PApplet;
 // http://pastebin.com/6wPgFYhq
 public class PCardboard extends CardboardActivity implements AppComponent {
   public static final String STEREO = "processing.cardboard.PGraphicsCardboard";
-  
+
+  public static final int LEFT      = Eye.Type.LEFT;
+  public static final int RIGHT     = Eye.Type.RIGHT;
+  public static final int MONOCULAR = Eye.Type.MONOCULAR;
+
   static public final int CARDBOARD = 3;
   
   private DisplayMetrics metrics;

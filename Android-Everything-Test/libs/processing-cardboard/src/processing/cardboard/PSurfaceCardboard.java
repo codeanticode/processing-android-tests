@@ -33,8 +33,6 @@ import android.util.Log;
 import android.view.SurfaceView;
 
 public class PSurfaceCardboard extends PSurfaceGLES {
-  private static final String TAG = "PSurfaceCardboard";
-
   protected GLCardboardSurfaceView glview;
   protected PGraphicsCardboard pgc;
   
@@ -52,7 +50,7 @@ public class PSurfaceCardboard extends PSurfaceGLES {
     pgc = (PGraphicsCardboard)graphics;
 
     glview = new GLCardboardSurfaceView(cardboard);
-    glview.setRestoreGLStateEnabled(false);
+//    glview.setRestoreGLStateEnabled(false);
     glview.setDistortionCorrectionEnabled(false);
 //    glview.setDistortionCorrectionEnabled(true);
 //    glview.setChromaticAberrationCorrectionEnabled(false);
@@ -247,7 +245,8 @@ public class PSurfaceCardboard extends PSurfaceGLES {
     cardboardStereoRenderer = new AndroidCardboardStereoRenderer();
     return cardboardStereoRenderer;
   }  
-  
+
+  /*
   protected class AndroidCardboardRenderer implements CardboardView.Renderer {
     public AndroidCardboardRenderer() {
     }
@@ -285,7 +284,8 @@ public class PSurfaceCardboard extends PSurfaceGLES {
       pgl.init(null);      
     }
   }
- 
+ */
+
   protected class AndroidCardboardStereoRenderer implements CardboardView.StereoRenderer {
     public AndroidCardboardStereoRenderer() {
 
@@ -293,41 +293,31 @@ public class PSurfaceCardboard extends PSurfaceGLES {
 
 
     @Override
-    public void onNewFrame(HeadTransform headTransform) {
+    public void onNewFrame(HeadTransform transform) {
       pgl.getGL(null);
-      // TODO Auto-generated method stub
-//      pgc.headTransform(arg0);
+      pgc.headTransform(transform);
     }
 
     @Override
-    public void onDrawEye(Eye arg0) {
-//      Log.i(TAG, "onDrawEye");
-      // TODO Auto-generated method stub
-      pgc.eyeTransform(arg0);
+    public void onDrawEye(Eye eye) {
+      pgc.eyeTransform(eye);
       sketch.handleDraw();
     }
 
     @Override
     public void onFinishFrame(Viewport arg0) {
-      // TODO Auto-generated method stub
     }
 
     @Override
     public void onRendererShutdown() {
-      // TODO Auto-generated method stub
-      
     }
 
     @Override
     public void onSurfaceChanged(int arg0, int arg1) {
-      // TODO Auto-generated method stub
-      
     }
 
     @Override
     public void onSurfaceCreated(EGLConfig arg0) {
-      // TODO Auto-generated method stub
-      
     }
   }
 }
