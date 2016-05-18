@@ -37,10 +37,9 @@ public class PSurfaceCardboard extends PSurfaceGLES {
   protected PGraphicsCardboard pgc;
   
   protected CardboardActivity cardboard;
-//  protected AndroidCardboardRenderer cardboardRenderer;
-  protected AndroidCardboardStereoRenderer cardboardStereoRenderer;
+  protected AndroidCardboardStereoRenderer renderer;
 
-  public PSurfaceCardboard(PGraphics graphics, AppComponent component, SurfaceHolder holder) {
+  public PSurfaceCardboard(PGraphics graphics, AppComponent component, SurfaceHolder holder, boolean vr) {
     this.sketch = graphics.parent;
     this.graphics = graphics;
     this.component = component;
@@ -50,10 +49,8 @@ public class PSurfaceCardboard extends PSurfaceGLES {
     pgc = (PGraphicsCardboard)graphics;
 
     glview = new GLCardboardSurfaceView(cardboard);
-//    glview.setRestoreGLStateEnabled(false);
     glview.setDistortionCorrectionEnabled(false);
-//    glview.setDistortionCorrectionEnabled(true);
-//    glview.setChromaticAberrationCorrectionEnabled(false);
+    glview.setVRModeEnabled(vr);
     cardboard.setCardboardView(glview);
 
     surface = null;
@@ -80,11 +77,11 @@ public class PSurfaceCardboard extends PSurfaceGLES {
     // the above line does not seem to be needed when using cardboard
     //  android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen" >
     window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
+                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN);
 
     // This does the actual full screen work
     window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
     window.setContentView(glview);
   }
@@ -124,37 +121,41 @@ public class PSurfaceCardboard extends PSurfaceGLES {
 
   // Thread handling
 
+  private boolean running = false;
 
   @Override
-  public void startThread() { }
+  public void startThread() {
+    glview.onResume();
+    running = true;
+  }
 
   @Override
   public void pauseThread() {
     glview.onPause();
+    running = false;
   }
 
   @Override
   public void resumeThread() {
     glview.onResume();
+    running = true;
   }
 
   @Override
   public boolean stopThread() {
     glview.onPause();
+    running = false;
     return true;
   }
 
   @Override
   public boolean isStopped() {
-    return false; // no
+    return !running;
   }
 
   ///////////////////////////////////////////////////////////
 
   public class GLCardboardSurfaceView extends CardboardView {
-//    PGraphicsOpenGL g3;
-//    SurfaceHolder surfaceHolder;
-
     public GLCardboardSurfaceView(Context context) {
       super(context);
 
@@ -167,15 +168,6 @@ public class PSurfaceCardboard extends PSurfaceGLES {
         throw new RuntimeException("OpenGL ES 2.0 is not supported by this device.");
       }
 
-//      surfaceHolder = getHolder();
-//      // are these two needed?
-//      surfaceHolder.addCallback(this);
-//      surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
-
-      // Tells the default EGLContextFactory and EGLConfigChooser to create an GLES2 context.
-//      setEGLContextClientVersion(2);
-//      setPreserveEGLContextOnPause(true);
-
       setFocusable(true);
       setFocusableInTouchMode(true);
       requestFocus();
@@ -187,10 +179,6 @@ public class PSurfaceCardboard extends PSurfaceGLES {
       // The renderer can be set only once.
 //      setRenderer(surf.getCardboardRenderer());
       setRenderer(getCardboardStereoRenderer());
-//
-      // Cardboard needs to run with its own loop.
-//      setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-//      setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 
     /*
@@ -236,55 +224,12 @@ public class PSurfaceCardboard extends PSurfaceGLES {
 
   // Android specific classes (Renderer, ConfigChooser)  
 
-//  public AndroidCardboardRenderer getCardboardRenderer() {
-//    cardboardRenderer = new AndroidCardboardRenderer();
-//    return cardboardRenderer;
-//  }
 
   public AndroidCardboardStereoRenderer getCardboardStereoRenderer() {
-    cardboardStereoRenderer = new AndroidCardboardStereoRenderer();
-    return cardboardStereoRenderer;
+    renderer = new AndroidCardboardStereoRenderer();
+    return renderer;
   }  
 
-  /*
-  protected class AndroidCardboardRenderer implements CardboardView.Renderer {
-    public AndroidCardboardRenderer() {
-    }
-
-    @Override
-    public void onDrawFrame(HeadTransform headTransform, Eye leftEye, Eye rightEye) {
-      Log.i(TAG, "onDrawFrame");
-      pgc.headTransform(headTransform);
-      if (leftEye != null) pgc.setLeftEye();
-      sketch.handleDraw();
-      if (rightEye != null) pgc.setRightEye();
-      sketch.handleDraw();      
-    }
-
-    @Override
-    public void onFinishFrame(Viewport arg0) {
-      // TODO Auto-generated method stub
-      
-    }
-
-    @Override
-    public void onRendererShutdown() {
-      // TODO Auto-generated method stub
-      
-    }
-
-    @Override
-    public void onSurfaceChanged(int iwidth, int iheight) {
-      pgl.getGL(null);
-      graphics.setSize(iwidth, iheight);     
-    }
-
-    @Override
-    public void onSurfaceCreated(EGLConfig arg0) {
-      pgl.init(null);      
-    }
-  }
- */
 
   protected class AndroidCardboardStereoRenderer implements CardboardView.StereoRenderer {
     public AndroidCardboardStereoRenderer() {

@@ -10,7 +10,8 @@ import processing.core.PApplet;
 
 // http://pastebin.com/6wPgFYhq
 public class PCardboard extends CardboardActivity implements AppComponent {
-  public static final String STEREO = "processing.cardboard.PGraphicsCardboard";
+  public static final String STEREO = "processing.cardboard.PGraphicsCardboardStereo";
+  public static final String MONO = "processing.cardboard.PGraphicsCardboardMono";
 
   public static final int LEFT      = Eye.Type.LEFT;
   public static final int RIGHT     = Eye.Type.RIGHT;
@@ -20,7 +21,6 @@ public class PCardboard extends CardboardActivity implements AppComponent {
   
   private DisplayMetrics metrics;
   private PApplet sketch;
-//  private CardboardView cardboardView;
 
   public PCardboard() {
 

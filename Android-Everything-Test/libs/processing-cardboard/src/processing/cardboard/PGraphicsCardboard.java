@@ -24,12 +24,9 @@ public class PGraphicsCardboard extends PGraphics3D {
   private PMatrix3D viewMatrix;
   private PMatrix3D perspectiveMatrix;
 
+
   protected PGL createPGL(PGraphicsOpenGL pg) {
     return new PGLES(pg);
-  }
-  
-  public PSurface createSurface(AppComponent component, SurfaceHolder holder) {  // ignore
-    return new PSurfaceCardboard(this, component, holder);
   }
 
 
