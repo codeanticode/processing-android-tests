@@ -67,8 +67,12 @@ public class PSurfaceCardboard extends PSurfaceGLES {
     pgc = (PGraphicsCardboard)graphics;
 
     glview = new GLCardboardSurfaceView(cardboard);
-    glview.setDistortionCorrectionEnabled(false);
     glview.setVRModeEnabled(vr);
+    if (vr) {
+      glview.setDistortionCorrectionEnabled(true);
+      glview.setNeckModelEnabled(true);
+//      glview.setElectronicDisplayStabilizationEnabled(true);
+    }
     cardboard.setCardboardView(glview);
 
     surface = null;
